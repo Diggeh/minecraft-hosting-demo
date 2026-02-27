@@ -26,7 +26,7 @@ const serverSchema = new mongoose.Schema(
       default: 'stopped'
     },
   },
-  { timestamps: true } // <-- Correct placement
+  { timestamps: true } 
 );
 
 module.exports = mongoose.model('Server', serverSchema);
