@@ -11,6 +11,13 @@ const app = express();
 app.use(cors()); // Allows your React frontend to communicate with this backend
 app.use(express.json()); // Allows your backend to understand JSON data
 
+// Import Routes
+const authRoutes = require("./routes/authRoutes");
+const serverRoutes = require("./routes/serverRoutes");
+
+app.use("/api/auth", authRoutes);
+app.use("/api/servers", serverRoutes);
+
 // Basic test route to check if the server is running
 app.get("/api/status", (req, res) => {
   res.json({ message: "Minecraft Hosting Backend is online!" });
