@@ -219,4 +219,47 @@ router.get("/:id/status", async (req, res) => {
   }
 });
 
+// Update Server
+
+router.patch("/:id/update", async (req, res) => {
+  try {
+    const server = await Server.findById(req.params.id);
+    if (!server)
+      return res.status(404).json({ message: "Server not found in DB" });
+
+    const { serverName } = req.body;
+
+    const updatePayload = {};
+
+    if (serverName) {
+      updatePayload.server_name = serverName;
+    }
+
+    console.log(
+      "📤 PATCHING CRAFTY V2:",
+      JSON.stringify(updatePayload, null, 2),
+    );
+
+    const craftyResponse = await craftyApi.patch(
+      `/servers/${server.crafty_server_id}`,
+      updatePayload,
+    );
+
+    if (serverName) server.serverName = serverName;
+    await server.save();
+
+    res.status(200).json({
+      message: "Server updated successfully!",
+      server,
+      craftyResponse: craftyResponse.data,
+    });
+  } catch (error) {
+    console.error("❌ CRAFTY REJECTED:", error.response?.data || error.message);
+    res.status(500).json({
+      message: "Update failed",
+      detail: error.response?.data || error.message,
+    });
+  }
+});
+
 module.exports = router;
