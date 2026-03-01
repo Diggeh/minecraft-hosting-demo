@@ -4,12 +4,12 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 
+// Initialize the Express app
+const app = express();
+
 // Import Routes
 const authRoutes = require("./routes/authRoutes");
 app.use("/api/auth", authRoutes);
-
-// Initialize the Express app
-const app = express();
 
 // Middleware
 app.use(cors()); // Allows your React frontend to communicate with this backend
