@@ -153,4 +153,45 @@ router.get("/", async (req, res) => {
   }
 });
 
+// ==========================================
+// ROUTE 5: Delete an Existing Server
+// ==========================================
+router.delete("/:id", async (req, res) => {
+  try {
+    const server = await Server.findById(req.params.id);
+    if (!server)
+      return res.status(404).json({ message: "Server not found in database" });
+
+    console.log(`🗑️ Deleting Crafty Server ID: ${server.crafty_server_id}`);
+
+    // --- GRACEFUL CRAFTY DELETION ---
+    try {
+      // If it's our broken TEMP_ID, don't even bother asking Crafty
+      if (server.crafty_server_id === "TEMP_ID") {
+        console.log(
+          "⚠️ Skipping Crafty deletion for TEMP_ID. Cleaning database...",
+        );
+      } else {
+        // Send the delete command to Crafty
+        await craftyApi.delete(`/servers/${server.crafty_server_id}`);
+        console.log("✅ Server deleted from Crafty.");
+      }
+    } catch (craftyError) {
+      // If Crafty fails (e.g., server already deleted manually), log it but DON'T crash
+      console.warn(
+        "⚠️ Crafty couldn't delete the server. Moving on to database cleanup...",
+      );
+    }
+    // --------------------------------
+
+    // Always remove the bridging data from our MongoDB, no matter what!
+    await Server.findByIdAndDelete(req.params.id);
+
+    res.status(200).json({ message: "Server completely wiped from database!" });
+  } catch (error) {
+    console.error("Database Delete Error:", error.message);
+    res.status(500).json({ message: "Failed to process deletion" });
+  }
+});
+
 module.exports = router;
