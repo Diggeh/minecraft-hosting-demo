@@ -194,4 +194,29 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
+// ==========================================
+// ROUTE 6: Get Live Server Status
+// ==========================================
+router.get("/:id/status", async (req, res) => {
+  try {
+    // 1. Find the server in your MongoDB
+    const server = await Server.findById(req.params.id);
+    if (!server)
+      return res.status(404).json({ message: "Server not found in database" });
+
+    // 2. Fetch the live stats from Crafty's API
+    const craftyResponse = await craftyApi.get(
+      `/servers/${server.crafty_server_id}/stats`,
+    );
+
+    // 3. Send the entire stats payload back to the client
+    res.status(200).json(craftyResponse.data.data);
+  } catch (error) {
+    console.error("Crafty Stats Error:", error.response?.data || error.message);
+    res
+      .status(500)
+      .json({ message: "Failed to fetch server status from Crafty" });
+  }
+});
+
 module.exports = router;
