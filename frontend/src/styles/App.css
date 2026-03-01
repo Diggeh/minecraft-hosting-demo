@@ -1,7 +1,13 @@
 /* --- LOGIN PAGE STYLES --- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 .login-page {
   min-height: 100vh;
-  background-color: #1a1a1a; /* Dark background */
+  background-color: #0E0E0E; /* Dark background */
   color: white;
   display: flex;
   align-items: center;
