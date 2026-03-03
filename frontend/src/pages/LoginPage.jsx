@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { AuthContext } from "../contexts/authContext";
 import api from "../services/api";
-import "../styles/App.css"; // We'll put our styles here
+import "../styles/LoginPage.css"; // We'll put our styles here
 
 const LoginPage = () => {
   // 1. Set up memory for what the user types

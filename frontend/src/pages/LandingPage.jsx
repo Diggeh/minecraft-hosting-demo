@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { AuthContext } from "../contexts/authContext";
 import api from "../services/api";
-import "./LandingPage.css";
+import "../styles/LandingPage.css";
 import Button from "../components/Button";
 import bgImage from "../assets/minecraft-image-1.png";
 
