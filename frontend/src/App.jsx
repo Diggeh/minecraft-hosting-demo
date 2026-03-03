@@ -14,27 +14,24 @@ import Navbar from "./components/Navbar";
 function App() {
   return (
     <Router>
-      <Navbar/>
-        <Routes>
-          {/* Automatically redirect people from the home page to the login screen */}
-          <Route path="/" element={<Navigate to="/login" />} />
+      <Navbar />
+      <Routes>
+        {/* Automatically redirect users to Landing page*/}
+        <Route path="/" element={<LandingPage />} />
 
-          {/* The Login Route */}
-          <Route path="/login" element={<LoginPage />} />
+        {/* The Login Route */}
+        <Route path="/login" element={<LoginPage />} />
 
-          {/* The Landing Page Route */}
-          <Route path="/landingpage" element={<LandingPage />} />
-
-          {/* Placeholder for the Dashboard we will build next */}
-          <Route
-            path="/dashboard"
-            element={
-              <div style={{ color: "white", padding: "20px" }}>
-                Dashboard Coming Soon...
-              </div>
-            }
-          />
-        </Routes>
+        {/* Placeholder for the Dashboard we will build next */}
+        <Route
+          path="/dashboard"
+          element={
+            <div style={{ color: "white", padding: "20px" }}>
+              Dashboard Coming Soon...
+            </div>
+          }
+        />
+      </Routes>
     </Router>
   );
 }

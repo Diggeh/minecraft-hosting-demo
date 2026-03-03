@@ -7,18 +7,27 @@
 
 .login-page {
   min-height: 100vh;
-  background-color: #0E0E0E; /* Dark background */
+  max-height: 50%;
+  background-image: url("../assets/minecraft-image-1.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: #0e0e0e; /* Dark background */
   color: white;
   display: flex;
-  align-items: center;
+  align-items: start;
   justify-content: center;
   font-family: "Inter", sans-serif; /* Update to your preferred font */
 }
 
 .login-title {
-  font-size: 3rem;
+  font-size: clamp(
+    2rem,
+    4vw + 1rem,
+    4rem
+  ); /* minimum, preferred (viewport width), maximum*/
   font-weight: 700;
   text-align: center;
+  margin-top: 25%;
   margin-bottom: 2rem;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
@@ -28,32 +37,41 @@
   width: 100%;
   display: flex;
   flex-direction: column;
+  margin: auto;
+  padding: 0 clamp(10px, 4vw, 40px);
 }
 
 .input-label {
   font-weight: bold;
+  margin-left: 1.5%;
   margin-bottom: 8px;
+  font-size: clamp(0.8rem, 1.1vw, 1.5rem);
 }
 
 .input-row {
   display: flex;
   gap: 15px;
   margin-bottom: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
 }
 
 .input-wrapper {
   display: flex;
   align-items: center;
+  height: clamp(40px, 6vw, 48px);
   background: white;
-  border-radius: 8px;
+  border-radius: 16px;
   padding: 0 15px;
-  flex: 1;
+  gap: 15px;
+  flex: 1 1 220px; /* grow, shrink, basis */
 }
 
 .input-wrapper input {
   border: none;
   outline: none;
-  padding: 15px 10px;
+  padding: 0px 10px;
   width: 100%;
   color: #333;
 }
@@ -67,13 +85,15 @@
 .btn-login {
   background-color: #5b8f3c; /* Minecraft Green */
   color: white;
+  height: clamp(50px, 20vw, 45px);
   border: none;
-  border-radius: 8px;
-  padding: 0 40px;
+  border-radius: 16px;
+  padding: 0 10px;
   font-weight: bold;
   font-size: 1rem;
   cursor: pointer;
   transition: background 0.2s;
+  flex: 1 1 125px;
 }
 
 .btn-login:hover {
@@ -83,7 +103,7 @@
 .cyan-link {
   color: #00d2d3;
   text-decoration: none;
-  font-size: 0.9rem;
+  font-size: clamp(0.8rem, 1vw, 1.2rem);
 }
 
 .cyan-link:hover {
@@ -112,7 +132,7 @@
 
 .signup-text {
   text-align: right;
-  font-size: 0.9rem;
+  font-size: clamp(0.8rem, 1vw, 1.2rem);
 }
 
 .error-text {
