@@ -4,6 +4,8 @@
 .main-header {
   background-color: #0e0e0e;
   position: sticky;
+  top: 0;
+  z-index: 100;
 }
 .header-container {
   max-width: 100%;
