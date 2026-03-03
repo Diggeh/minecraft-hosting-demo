@@ -18,7 +18,14 @@
   display: flex;
   align-items: center;
   gap: 1rem;
+  text-decoration: none;
+  margin-top: 5px;
 }
+
+.logo:visited {
+  text-decoration: none;
+}
+
 .logo h2 {
   font-family: "Mina", sans-serif;
   margin: 0;
@@ -32,30 +39,49 @@
   align-items: center;
   font-family: "Inter", sans-serif;
 }
+
 .navigation a {
   color: rgb(255, 255, 255);
   font-weight: 500;
   transition: color 0.3s ease;
   text-decoration: none;
 }
-.navigation a:last-child {
-  display: inline-block;
-  background-color: rgb(255, 255, 255);
-  color: #000;
-  padding: 8px 10px;
+
+.navigation a:hover {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.auth-group {
+  display: flex;
+  align-items: center;
+}
+
+.profile-btn {
+  display: flex;
+  padding: 8px 15px;
   border-radius: 5px;
   text-decoration: none;
   font-weight: bold;
   transition: all 0.3s ease;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
 }
-.navigation a:hover {
-  color: rgb(255, 255, 255, 0.5);
-  text-decoration: none;
+
+.profile-btn a {
+  color: rgb(255, 255, 255);
 }
-.navigation a:last-child:hover {
-  color: rgb(0, 0, 0);
-  background-color: rgb(255, 255, 255, 0.9);
-  text-decoration: none;
+
+.profile-btn img {
+  width: 125%;
+  margin-top: 5px;
+}
+
+.line {
+  height: 30px;
+  width: 1px;
+  background-color: rgb(255, 255, 255);
+  margin-right: 10px;
 }
 
 .contact-section {
@@ -65,7 +91,20 @@
 }
 
 @media (max-width: 767px) {
-  .navigation {
+  .logo img {
+    width: 30px;
+    height: 30px;
+  }
+
+  .logo h2 {
+    font-size: 1.4rem;
+  }
+
+  .navigation > a {
+    display: none;
+  }
+
+  .profile-btn a:last-child {
     display: none;
   }
 }

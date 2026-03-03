@@ -7,12 +7,12 @@
 
 .login-page {
   min-height: 100vh;
-  background-color: #0e0e0e; 
+  background-color: #0e0e0e;
   color: white;
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  font-family: "Inter", sans-serif; /* Update to your preferred font */
+  font-family: "Kdam Thmor Pro", sans-serif; /* Update to your preferred font */
   position: relative;
   overflow: hidden;
 }
@@ -26,13 +26,10 @@
   bottom: 0;
   background-image: url("../assets/minecraft-image-2.png");
   background-repeat: no-repeat;
-  background-position: center;
-  background-size: 70vh;
-  
-  /* --- SET YOUR OPACITY HERE --- */
-  opacity: 0.4; /* 0.4 = 40% visible. Adjust as needed! */
-  
-  z-index: 0; /* Keeps it behind the login form */
+  background-position: 50% 35%;
+  background-size: contain;
+  opacity: 0.4;
+  z-index: 0;
 }
 
 .login-page > * {
@@ -51,6 +48,13 @@
   margin-top: 25%;
   margin-bottom: 2rem;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 400px) {
+  .login-title {
+    white-space: normal;
+    text-align: center;
+  }
 }
 
 .login-form {
@@ -78,15 +82,24 @@
   align-items: center;
 }
 
+.input-row > * {
+  flex: 1 1 200px;
+  min-width: 150px;
+}
+
+.input-row > *:only-child {
+  flex-basis: 100%;
+}
+
 .input-wrapper {
   display: flex;
   align-items: center;
-  height: clamp(40px, 6vw, 48px);
+  height: clamp(50px, 6vw, 55px);
+  width: 10vw;
   background: white;
   border-radius: 16px;
   padding: 0 15px;
   gap: 15px;
-  flex: 1 1 220px; /* grow, shrink, basis */
 }
 
 .input-wrapper input {
@@ -106,7 +119,7 @@
 .btn-login {
   background-color: #5b8f3c; /* Minecraft Green */
   color: white;
-  height: clamp(50px, 20vw, 45px);
+  height: clamp(50px, 6vw, 55px);
   border: none;
   border-radius: 16px;
   padding: 0 10px;

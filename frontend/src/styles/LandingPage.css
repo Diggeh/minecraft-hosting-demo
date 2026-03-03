@@ -9,12 +9,12 @@
 
 .landing-page {
   min-height: 100vh;
-  background-color: #0E0E0E; 
+  background-color: #0e0e0e;
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: "Inter", sans-serif; 
+  font-family: "Kdam Thmor Pro", sans-serif;
 }
 
 .page-bg {
@@ -25,30 +25,30 @@
 }
 
 .hero-section {
-    display: flex;
+  display: flex;
 }
 
 .hero-content {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .hero-content h1 {
-    font-family: "Kdam Thmor Pro", sans-serif;
+  font-family: "Kdam Thmor Pro", sans-serif;
 }
 
 .hero-action {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    border: #FFFFFF solid;
-    border-radius: 25px;
-    padding: 20px;
-    gap: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: #ffffff solid;
+  border-radius: 25px;
+  padding: 20px;
+  gap: 20px;
 }
 
 .hero-action h2 {
-    font-size: 1.3rem;
-    font-family: 'Kdam Thmor Pro', sans-serif;
+  font-size: 1.3rem;
+  font-family: "Kdam Thmor Pro", sans-serif;
 }
