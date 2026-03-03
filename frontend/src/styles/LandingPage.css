@@ -7,6 +7,10 @@
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 .landing-page {
   min-height: 100vh; 
   background-color: #0e0e0e;
@@ -66,7 +70,7 @@
   margin-top: 100px;
   padding: 80px;
   align-items: center;
-  scroll-margin-top: 50rem;
+  scroll-margin-top: 10px;
 }
 
 .plans-container {  
