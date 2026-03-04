@@ -1,0 +1,198 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Kdam+Thmor+Pro&family=Mina:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Kdam+Thmor+Pro&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.landing-page {
+  min-height: 100vh; 
+  background-color: #0e0e0e;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: "Kdam Thmor Pro", sans-serif; 
+  overflow: hidden;
+}
+
+.hero-section {
+  display: flex;
+  gap: 0px;
+  align-items: stretch;
+  width: 100%;
+  padding: 10px;
+}
+
+.left-section {
+  flex: 0.7;
+}
+
+.page-bg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.right-section {
+  flex: 0.3;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 100%;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 80px 10px 0px;
+}
+
+.btn-primary {
+  min-width: 100%;
+  margin-top: 10px;
+}
+
+.hero-label {
+  display: flex;
+  justify-content: center;
+  align-items: center;  
+  font-size: clamp(1rem, 5vw, 2rem);
+}
+
+.plans-section {
+  display: flex;
+  flex-direction: column;
+  margin-top: 100px;
+  padding: 80px;
+  align-items: center;
+  scroll-margin-top: 10px;
+}
+
+.plans-section p {
+  margin-top: 16px; 
+  font-size: 0.7rem;
+}
+
+.plans-container {  
+  margin-top: 40px;
+  display: flex;
+  flex-direction: row;
+  gap: 90px;
+  width: 80%;
+}
+
+.plan-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 25px;
+  background-color: rgba(217, 217, 217, 0.1);
+  align-items: center;
+  border: rgba(94, 157, 52, 0.5) 2px solid;
+  border-radius: 30px;
+}
+
+.plan-card h2 { 
+  color: #FFFFFF;
+}
+
+.plan-card img {
+  flex: 1;
+  width: 80%;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+
+.info-row {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  justify-content: start;
+  align-items: center;
+}
+
+.info-row img {
+  flex: 0.2;
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.info-text {
+  flex: 1;
+  font-size: clamp(0.1rem, 2vh, 1rem);
+}
+
+.pricing-row {
+  display: flex;
+  align-items: top; 
+  gap: 6px;
+}
+
+.currency {
+  font-size: 1rem;
+  line-height: 2.8;
+}
+
+.amount {
+  font-size: 3rem;
+  font-weight: 700;
+}
+
+.slash {
+  font-size: 3rem;   
+  font-weight: 300;
+  line-height: 1.5;
+}
+
+.period {
+  font-size: 1rem;
+  line-height: 2.5;
+}
+
+@media (max-width: 600px) {
+  .hero-section {
+    flex-direction: column;
+    align-items: center; 
+    text-align: center;
+    gap: 0px;
+  }
+
+  .left-section {
+    flex: none;
+  }
+
+  .right-section {
+    flex: none;
+    width: 100%;     
+    align-items: center; 
+    padding: 10px 10px 10px 10px;
+  }
+
+  .plans-section {
+      margin-top: 0px;
+  }
+
+  .plans-container {
+    flex-direction: column;
+    width: 80vw;
+  }
+
+  .plan-card img {
+    width: 50vw;
+    height: 50vh;
+  }
+
+  .info-row img {
+    width: 25px;
+    height: 25px;
+  }
+}

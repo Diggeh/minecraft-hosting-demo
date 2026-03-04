@@ -1,0 +1,152 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Kdam+Thmor+Pro&family=Mina:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Kdam+Thmor+Pro&display=swap");
+
+.signup-page {
+  min-height: 100vh;
+  background-color: black;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /*  vertically  */
+  justify-content: center; /* horizontally */
+  font-family: "Kdam Thmor Pro", sans-serif;
+}
+
+.signup-page::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("../assets/minecraft-image-2.png");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: 60% 50px;
+  opacity: 0.4;
+  z-index: 0;
+}
+
+.signup-title-page {
+  width: 80%;
+  display: flex;
+  align-items: end;
+  justify-content: center;
+  flex: 1 1 2px; /* starts at 2px tall,, */
+  padding-top: 15px;
+  z-index: 1;
+}
+
+.signup-title-page p {
+  color: rgba(255, 255, 255, 1);
+  font-size: 3rem;
+}
+
+.signup-body {
+  max-width: 800px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+  align-items: center;
+  justify-content: start;
+  padding: 5px 15px;
+  flex: 3 1 10px;
+  gap: 0.1rem;
+  z-index: 1;
+}
+
+.signup-body-label {
+  align-self: flex-start;
+  margin-left: 15%;
+  font-size: clamp(0.7rem, 0.8vw, 1rem);
+  color: rgba(255, 255, 255, 1);
+}
+
+.signup-input-container {
+  width: 70%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.signup-input-body {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  min-width: 100px; /* prevents shrinking too small */
+  height: 40px;
+  flex-basis: 100%;
+
+  background: white;
+  border-radius: 15px;
+  padding: 0 15px;
+}
+
+.signup-input-body.forty {
+  flex: 1 1 35%;
+}
+
+.signup-input-body.sixty {
+  flex: 1 1 55%;
+}
+
+.signup-input-body.wide {
+  flex: 1 1 100%;
+}
+
+.signup-input-body img {
+  width: 20px;
+}
+
+.signup-input-body input {
+  border: none;
+  outline: none;
+  padding: 0 30 0 0;
+  width: 100%;
+  background: transparent;
+  color: #333;
+  font-family: "Kdam Thmor Pro", sans-serif;
+}
+
+.signup-btn {
+  background-color: rgba(94, 157, 52, 1);
+  color: rgba(255, 255, 255, 1);
+  border: none;
+  border-radius: 18px;
+  flex: 1 1 10px;
+}
+
+@media (max-width: 600px) {
+  .signup-page::before {
+    background-position: 50% 55%;
+  }
+
+  .signup-input-container {
+    width: 100%;
+  }
+
+  .signup-body {
+    justify-content: start;
+  }
+
+  .signup-body-label {
+    margin-left: 0%;
+  }
+
+  .signup-input-body.forty {
+    flex: 1 1 55%;
+  }
+
+  .signup-input-body.sixty {
+    flex: 1 1 55%;
+  }
+
+  .signup-title-page {
+    width: 100%;
+    margin-bottom: 15px;
+  }
+
+  .signup-title-page p {
+    font-size: 2rem;
+  }
+}
