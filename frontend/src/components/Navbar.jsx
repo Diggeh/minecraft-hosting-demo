@@ -9,6 +9,7 @@ export default function Navbar() {
 
   // Check if user is on Login Page
   const isLoginPage = location.pathname === "/login";
+  const isSignUpPage = location.pathname === "/register";
 
   return (
     <header className="main-header">
@@ -22,7 +23,7 @@ export default function Navbar() {
           <a href="/">Home</a>
 
           {/* Only show these links if NOT on login page */}
-          {!isLoginPage && (
+          {(!isLoginPage && !isSignUpPage) && (
             <>
               <a href="#plans">Plans</a>
               <a href="/features">Features</a>

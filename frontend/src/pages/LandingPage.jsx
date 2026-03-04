@@ -12,8 +12,6 @@ import iconGroup from "../assets/icon-group.png";
 import iconHarddrive from "../assets/icon-harddrive.png";
 import iconLocation from "../assets/icon-location.png";
 
-
-
 const LandingPage = () => {
     return (
         <div className="landing-page">
@@ -116,6 +114,7 @@ const LandingPage = () => {
                     </div>
                     
                 </div>
+                <p>*Plans are offered on a two-week basis, cancel anytime</p>
             </section>
         </div>
     );

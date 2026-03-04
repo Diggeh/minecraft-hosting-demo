@@ -73,6 +73,11 @@ html {
   scroll-margin-top: 10px;
 }
 
+.plans-section p {
+  margin-top: 16px; 
+  font-size: 0.7rem;
+}
+
 .plans-container {  
   margin-top: 40px;
   display: flex;
