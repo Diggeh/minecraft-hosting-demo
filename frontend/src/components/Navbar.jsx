@@ -24,8 +24,8 @@ export default function Navbar() {
           {!isLoginPage && !isSignUpPage && (
             <>
               <a href="#plans">Plans</a>
-              <Link to="/features">Features</Link>
-              <Link to="/contactus">Contact us</Link>
+              <a href="#features">Features</a>
+              <a href="#contactus">Contact us</a>
             </>
           )}
 
