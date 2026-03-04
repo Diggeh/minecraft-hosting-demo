@@ -2,7 +2,7 @@ import axios from "axios";
 
 // 1. Point Axios to your Express backend
 const api = axios.create({
-  baseURL: "http://localhost:5000/api",
+  baseURL: `${import.meta.env.VITE_URL}/api`,
 });
 
 // 2. Automatically attach the Auth Token to every request

@@ -10,12 +10,10 @@ exports.register = async (req, res) => {
       return res.status(400).json({ message: "User already exists" });
 
     const user = await User.create({ username, email, password });
-    res
-      .status(201)
-      .json({
-        message: "User registered successfully",
-        user: { _id: user._id, username: user.username },
-      });
+    res.status(201).json({
+      message: "User registered successfully",
+      user: { _id: user._id, username: user.username },
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -26,7 +24,8 @@ exports.login = async (req, res) => {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
 
-    if (!user) return res.status(400).json({ message: "Invalid credentials" });
+    if (!user)
+      return res.status(400).json({ message: "Email does not exists." });
 
     const passwordMatched = await bcrypt.compare(password, user.password);
 
