@@ -7,6 +7,7 @@
 
 .login-page {
   min-height: 100vh;
+  max-height: 100vh;
   background-color: #0e0e0e;
   color: white;
   display: flex;
@@ -26,7 +27,7 @@
   bottom: 0;
   background-image: url("../assets/minecraft-image-2.png");
   background-repeat: no-repeat;
-  background-position: 50% 35%;
+  background-position: 50% 0.1vh;
   background-size: contain;
   opacity: 0.4;
   z-index: 0;
@@ -45,16 +46,9 @@
   ); /* minimum, preferred (viewport width), maximum*/
   font-weight: 700;
   text-align: center;
-  margin-top: 25%;
+  margin-top: 20%;
   margin-bottom: 2rem;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-}
-
-@media (max-width: 400px) {
-  .login-title {
-    white-space: normal;
-    text-align: center;
-  }
 }
 
 .login-form {
@@ -94,20 +88,37 @@
 .input-wrapper {
   display: flex;
   align-items: center;
-  height: clamp(50px, 6vw, 55px);
+  height: 45px;
   width: 10vw;
   background: white;
   border-radius: 16px;
   padding: 0 15px;
-  gap: 15px;
+  gap: 10px;
+}
+
+.input-wrapper img {
+  margin: none;
 }
 
 .input-wrapper input {
   border: none;
   outline: none;
-  padding: 0px 10px;
+  padding: 0px 0px;
   width: 100%;
   color: #333;
+  font-family: "Kdam Thmor Pro", sans-serif;
+}
+
+.input-wrapper-button {
+  width: max-content;
+  position: end;
+  padding: 0;
+  border: none;
+  background-color: transparent;
+}
+
+.input-wrapper-button img {
+  width: 25px;
 }
 
 .icon,
@@ -119,7 +130,7 @@
 .btn-login {
   background-color: #5b8f3c; /* Minecraft Green */
   color: white;
-  height: clamp(50px, 6vw, 55px);
+  height: 45px;
   border: none;
   border-radius: 16px;
   padding: 0 10px;
@@ -173,4 +184,28 @@
   color: #ff6b6b;
   font-size: 0.9rem;
   margin-top: -5px;
+}
+
+@media (max-width: 767px) {
+  .login-page::before {
+    background-position: center 15vh;
+  }
+  .login-title {
+    white-space: normal;
+    text-align: center;
+    margin-top: 14%;
+    margin-bottom: 1.5rem;
+  }
+
+  .input-wrapper {
+    height: 48px;
+  }
+
+  .btn-login {
+    height: 48px;
+  }
+
+  .btn-google {
+    margin-top: 3rem;
+  }
 }
