@@ -74,7 +74,7 @@ html {
 }
 
 .plans-section p {
-  margin-top: 16px; 
+  margin-top: 40px; 
   font-size: 0.7rem;
 }
 
@@ -96,6 +96,16 @@ html {
   align-items: center;
   border: rgba(94, 157, 52, 0.5) 2px solid;
   border-radius: 30px;
+  transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.plan-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0px 30px 5px rgba(43, 255, 0, 0.2);
+  border: rgba(94, 157, 52, 0.8) 2px solid;
+  opacity: 1;
+  filter: brightness(1);
+  background-color: #434343;
 }
 
 .plan-card h2 { 
