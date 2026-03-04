@@ -24,6 +24,7 @@ html {
 }
 
 .hero-section {
+  margin-top: 45px;
   display: flex;
   gap: 0px;
   align-items: stretch;
@@ -168,6 +169,65 @@ html {
   line-height: 2.5;
 }
 
+.features-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 80px;
+  align-items: center;
+  scroll-margin-top: 10px;
+}
+
+.features-section p {
+  display: flex;
+  margin-top: 40px; 
+  font-size: 0.7rem;
+}
+
+.features-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  width: 100%;
+  padding: 40px 125px 40px 125px;
+  box-sizing: border-box;
+  justify-content: center;
+}
+
+.features-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: auto;
+  height: auto;
+  background-color: #5E9D34;
+  border-radius: 20px;
+  padding: 20px;
+  overflow: hidden;
+  gap: 20px;
+}
+
+.features-card img {
+  position: absolute;
+  width: 250px;
+  height: 250px;
+  top: -70px;
+  right: -70px;
+  z-index: 0;
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.features-card h2 {
+  margin: 0px;
+  font-size: 2.5rem;
+}
+
+.features-card p {
+  margin: 0px;
+  font-size: 0.8rem;
+}
+
 @media (max-width: 600px) {
   .hero-section {
     flex-direction: column;
@@ -204,5 +264,13 @@ html {
   .info-row img {
     width: 25px;
     height: 25px;
+  }
+
+  .features-container {
+    padding: 10px;
+  }
+
+  .features-card h2 {
+    font-size: 1.5rem;
   }
 }

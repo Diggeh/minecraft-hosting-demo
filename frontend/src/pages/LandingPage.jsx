@@ -11,6 +11,7 @@ import iconLaptop from "../assets/icon-laptop.png";
 import iconGroup from "../assets/icon-group.png";
 import iconHarddrive from "../assets/icon-harddrive.png";
 import iconLocation from "../assets/icon-location.png";
+import iconGlobe from "../assets/icon-globe.svg";
 
 const LandingPage = () => {
     return (
@@ -115,6 +116,42 @@ const LandingPage = () => {
                     
                 </div>
                 <p>*Plans are offered on a two-week basis, cancel anytime</p>
+            </section>
+
+            <section id="features" className="features-section">
+                <h1>Features</h1>
+                <div className="features-container">
+                    <div className="features-card">
+                        <img src={iconGlobe} alt="" />
+                        <h2>Feature 1</h2>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita ducimus omnis quo similique. Quas maxime repellat doloremque, libero qui asperiores molestias, perferendis deserunt adipisci reiciendis quia possimus harum! Voluptas, quis.</p>
+                    </div>
+                    <div className="features-card">
+                        <img src={iconGlobe} alt="" />
+                        <h2>Feature 2</h2>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita ducimus omnis quo similique. Quas maxime repellat doloremque, libero qui asperiores molestias, perferendis deserunt adipisci reiciendis quia possimus harum! Voluptas, quis.</p>
+                    </div>
+                    <div className="features-card">
+                        <img src={iconGlobe} alt="" />
+                        <h2>Feature 3</h2>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita ducimus omnis quo similique. Quas maxime repellat doloremque, libero qui asperiores molestias, perferendis deserunt adipisci reiciendis quia possimus harum! Voluptas, quis.</p>
+                    </div>
+                    <div className="features-card">
+                        <img src={iconGlobe} alt="" />
+                        <h2>Feature 4</h2>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita ducimus omnis quo similique. Quas maxime repellat doloremque, libero qui asperiores molestias, perferendis deserunt adipisci reiciendis quia possimus harum! Voluptas, quis.</p>
+                    </div>
+                    <div className="features-card">
+                        <img src={iconGlobe} alt="" />
+                        <h2>Feature 5</h2>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita ducimus omnis quo similique. Quas maxime repellat doloremque, libero qui asperiores molestias, perferendis deserunt adipisci reiciendis quia possimus harum! Voluptas, quis.</p>
+                    </div>
+                    <div className="features-card">
+                        <img src={iconGlobe} alt="" />
+                        <h2>Feature 6</h2>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita ducimus omnis quo similique. Quas maxime repellat doloremque, libero qui asperiores molestias, perferendis deserunt adipisci reiciendis quia possimus harum! Voluptas, quis.</p>
+                    </div>
+                </div>
             </section>
         </div>
     );
