@@ -1,5 +1,5 @@
 import React from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom"; // 1. Added Link
 import "./Navbar.css";
 import logo from "../assets/logo.png";
 import profileIcon from "../assets/icon_profile.svg";
@@ -7,37 +7,35 @@ import profileIcon from "../assets/icon_profile.svg";
 export default function Navbar() {
   const location = useLocation();
 
-  // Check if user is on Login Page
   const isLoginPage = location.pathname === "/login";
   const isSignUpPage = location.pathname === "/register";
 
   return (
     <header className="main-header">
       <div className="header-container">
-        <a href="/" className="logo">
+        <Link to="/" className="logo">
           <img src={logo} alt="BlockBayan Logo" />
           <h2>BlockBayan</h2>
-        </a>
+        </Link>
 
         <nav className="navigation">
-          <a href="/">Home</a>
+          <Link to="/#" onClick={() => window.scrollTo(0, 0)}>Home</Link>
 
-          {/* Only show these links if NOT on login page */}
-          {(!isLoginPage && !isSignUpPage) && (
+          {!isLoginPage && !isSignUpPage && (
             <>
               <a href="#plans">Plans</a>
-              <a href="/features">Features</a>
-              <a href="/contactus">Contact us</a>
+              <Link to="/features">Features</Link>
+              <Link to="/contactus">Contact us</Link>
             </>
           )}
 
           <div className="auth-group">
             <div className="line"></div>
             <div className="profile-btn">
-              <a href="/login">
+              <Link to="/login">
                 <img src={profileIcon} alt="Login" />
-              </a>
-              <a href="/login">Login</a>
+              </Link>
+              <Link to="/login">Login</Link>
             </div>
           </div>
         </nav>
