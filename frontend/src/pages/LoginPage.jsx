@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../contexts/authContext";
 import api from "../services/api";
 import iconMail from "../assets/icon_mail.svg";
@@ -103,9 +103,9 @@ const LoginPage = () => {
           {error && <p className="error-text">{error}</p>}
 
           <div className="form-links">
-            <a href="#" className="cyan-link">
+            <Link to="#" className="cyan-link">
               Forgot password?
-            </a>
+            </Link>
           </div>
 
           <button type="button" className="btn-google">
@@ -119,9 +119,9 @@ const LoginPage = () => {
 
           <p className="signup-text">
             Don't have an account?{" "}
-            <a href="/register" className="cyan-link">
+            <Link to="/register" className="cyan-link">
               Sign up here
-            </a>
+            </Link>
           </p>
         </form>
       </div>
