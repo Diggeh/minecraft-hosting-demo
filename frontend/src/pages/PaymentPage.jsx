@@ -4,10 +4,14 @@ import axios from "axios";
 import QRCode from "react-qr-code";
 import "../styles/PaymentPage.css";
 
+const DEFAULT_PLAN = { name: "Starter", price: 249 };
+
 const PaymentPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { plan } = location.state || { plan: { name: "Starter", price: 249 } };
+
+  // Directly use location.state.plan or the stable DEFAULT_PLAN
+  const requestedPlan = location.state?.plan || DEFAULT_PLAN;
 
   const [status, setStatus] = useState("pending");
   const [payment, setPayment] = useState(null);
@@ -19,10 +23,11 @@ const PaymentPage = () => {
   useEffect(() => {
     const initPage = async () => {
       try {
+        console.count("🔄 Payment session creation attempt");
         const payRes = await axios.post(`${API_BASE}/payments/create`, {
           userId: "65e69e776077556066777777",
-          planId: plan.name,
-          amount: plan.price,
+          planId: requestedPlan.name,
+          amount: requestedPlan.price,
         });
         setPayment(payRes.data);
 
@@ -40,7 +45,7 @@ const PaymentPage = () => {
       }
     };
     initPage();
-  }, [plan]);
+  }, [requestedPlan.name, requestedPlan.price]); // Depend on plan values, not the object itself
 
   useEffect(() => {
     if (!payment || status === "completed") return;
@@ -109,7 +114,7 @@ const PaymentPage = () => {
             </div>
             <div className="amount-info">
               <span className="label">Amount Due:</span>
-              <span className="value accent">₱{plan.price}.00</span>
+              <span className="value accent">₱{requestedPlan.price}.00</span>
             </div>
           </div>
         </div>
