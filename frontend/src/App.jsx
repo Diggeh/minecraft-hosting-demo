@@ -11,6 +11,8 @@ import LoginPage from "./pages/LoginPage";
 import LandingPage from "./pages/LandingPage";
 import Navbar from "./components/Navbar";
 import SignupPage from "./pages/SignupPage";
+import PaymentPage from "./pages/PaymentPage";
+
 
 function App() {
   return (
@@ -25,15 +27,7 @@ function App() {
 
         <Route path="/register" element={<SignupPage />} />
 
-        {/* Placeholder for the Dashboard we will build next */}
-        <Route
-          path="/dashboard"
-          element={
-            <div style={{ color: "white", padding: "20px" }}>
-              Dashboard Coming Soon...
-            </div>
-          }
-        />
+        <Route path="/payment" element={<PaymentPage />} />
       </Routes>
     </Router>
   );
