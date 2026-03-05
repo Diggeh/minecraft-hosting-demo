@@ -6,6 +6,7 @@ import {
   Navigate,
 } from "react-router-dom";
 
+import CreateServerPage from "./pages/CreateServerPage";
 import LoginPage from "./pages/LoginPage";
 import LandingPage from "./pages/LandingPage";
 import Navbar from "./components/Navbar";
@@ -46,6 +47,14 @@ function App() {
           element={
             <ProtectedRoute>
               <ServerListPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/create-server"
+          element={
+            <ProtectedRoute>
+              <CreateServerPage />
             </ProtectedRoute>
           }
         />

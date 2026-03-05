@@ -1,18 +1,17 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Button from "../components/Button";
-import { getUserServers } from "../services/api"; // Import your new API function
-import harddriveIcon from "../assets/icon-harddrive.png";
-import groupIcon from "../assets/icon-group.png";
+import { getUserServers } from "../services/api";
 import "../styles/ServerListPage.css";
 
 const ServerListPage = () => {
   const [servers, setServers] = useState([]);
-  const [loading, setLoading] = useState(true); // Add a loading state
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch the servers when the component mounts
     const fetchServers = async () => {
       try {
         const data = await getUserServers();
@@ -31,63 +30,61 @@ const ServerListPage = () => {
   return (
     <div className="server-list-container">
       <main className="server-list-content">
+        {/* UPDATED HEADER SECTION */}
         <header className="server-list-header">
-          <h1>My Active Servers</h1>
-          <Button className="primary-btn">Rent New Server</Button>
+          <div className="header-titles">
+            <h1>Your Servers</h1>
+            <p className="subtitle">
+              Manage all your game servers in one place
+            </p>
+          </div>
+          <Button
+            className="primary-btn create-btn"
+            onClick={() => navigate("/create-server")}
+          >
+            Create Server +
+          </Button>
         </header>
 
-        {/* Handle Loading & Error States */}
-        {loading && <p>Loading your servers...</p>}
-        {error && <p style={{ color: "red" }}>{error}</p>}
+        {loading && <p className="status-message">Loading your servers...</p>}
+        {error && <p className="status-message error">{error}</p>}
         {!loading && servers.length === 0 && (
-          <p>You don't have any active servers yet!</p>
+          <p className="status-message">
+            You don't have any active servers yet!
+          </p>
         )}
 
         <div className="server-grid">
           {servers.map((server) => (
-            // Use the MongoDB _id for the React key
             <div key={server._id} className="server-card">
+              {/* UPDATED CARD HEADER */}
               <div className="server-card-header">
-                {/* Map to your DB schema's 'serverName' */}
                 <h2>{server.serverName}</h2>
-                <span className={`status-badge ${server.status.toLowerCase()}`}>
-                  {server.status}
-                </span>
+                <button className="options-menu-btn">•••</button>
               </div>
 
+              {/* UPDATED CARD BODY */}
               <div className="server-details">
-                <p>
-                  <img
-                    src={harddriveIcon}
-                    alt="Plan Icon"
-                    className="inline-icon"
-                  />
-                  {/* We are mocking the plan/players/expires since they aren't in your DB schema yet */}
-                  Standard Plan
-                </p>
-                <p>
-                  <img
-                    src={groupIcon}
-                    alt="Group Icon"
-                    className="inline-icon"
-                  />
-                  Unknown Players
-                </p>
+                <p className="ip-label">Server IP</p>
                 <div className="ip-container">
-                  {/* We display the actual port from the DB to help with local testing */}
-                  <strong>Local Port:</strong> <code>{server.port}</code>
+                  <code>Placeholder Server.IP:{server.port}</code>
                 </div>
-                <p className="expiry-text">Expires: TBD</p>
+
+                <div className="status-row">
+                  <span className="status-dot online"></span>
+                  <span className="status-text">
+                    {server.status || "Running"}
+                  </span>
+                </div>
               </div>
 
               <div className="server-actions">
-                <Button className="secondary-btn">Manage</Button>
                 <Button
                   className={
                     server.status === "running" ? "danger-btn" : "success-btn"
                   }
                 >
-                  {server.status === "running" ? "Stop Server" : "Start Server"}
+                  {server.status === "running" ? "Stop" : "Start"}
                 </Button>
               </div>
             </div>

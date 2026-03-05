@@ -1,107 +1,179 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Kdam+Thmor+Pro&family=Mina:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Kdam+Thmor+Pro&display=swap");
+
 .server-list-container {
   min-height: 100vh;
-  background-color: #f4f6f8;
+  background-color: #0e0e0e; /* Lighter, cleaner background */
+  font-family: "Inter", sans-serif; /* Standard Figma font */
 }
 
 .server-list-content {
-  max-width: 1200px;
+  max-width: 1100px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 3rem 2rem;
 }
 
+/* --- Header Styles --- */
 .server-list-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
+  margin-bottom: 3rem;
 }
 
+.header-titles h1 {
+  font-family: "Kdam Thmor Pro", sans-serif;
+  font-size: 2rem;
+  color: #ffffff;
+  margin: 0 0 0.5rem 0;
+  font-weight: 700;
+}
+
+.header-titles .subtitle {
+  font-family: "Kdam Thmor Pro", sans-serif;
+  color: #ffffff;
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.create-btn {
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  border-radius: 8px;
+  background-color: #366417;
+}
+
+/* --- Grid & Card Styles --- */
 .server-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 1.5rem;
 }
 
 .server-card {
-  background: white;
+  background: #303030;
   border-radius: 12px;
   padding: 1.5rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-  border: 1px solid #e1e4e8;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e8f0;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.server-card:hover {
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transform: translateY(-2px);
 }
 
 .server-card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 0.5rem;
+  margin-bottom: 1.25rem;
 }
 
 .server-card-header h2 {
   font-size: 1.25rem;
+  color: #1e293b;
   margin: 0;
+  font-weight: 600;
 }
 
-.status-badge {
-  padding: 0.25rem 0.75rem;
-  border-radius: 20px;
-  font-size: 0.85rem;
-  font-weight: bold;
+.options-menu-btn {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  font-size: 1.2rem;
+  cursor: pointer;
+  letter-spacing: 2px;
 }
 
-.status-badge.online {
-  background-color: #d4edda;
-  color: #155724;
+.options-menu-btn:hover {
+  color: #475569;
 }
 
-.status-badge.offline {
-  background-color: #f8d7da;
-  color: #721c24;
-}
-
+/* --- Server Details --- */
 .server-details {
   margin-bottom: 1.5rem;
 }
 
-.server-details p {
-  margin: 0.5rem 0;
-  display: flex;
-  align-items: center;
-  color: #4a5568;
-}
-
-.inline-icon {
-  width: 18px;
-  height: 18px;
-  margin-right: 8px;
-  opacity: 0.7;
+.ip-label {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin: 0 0 0.5rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
 }
 
 .ip-container {
-  background: #f1f3f5;
-  padding: 0.5rem;
-  border-radius: 6px;
-  margin: 0.75rem 0;
-  font-size: 0.9rem;
+  background: #f1f5f9;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
 }
 
 .ip-container code {
-  color: #e83e8c;
-  margin-left: 0.5rem;
+  color: #334155;
+  font-family: "Courier New", Courier, monospace;
+  font-weight: 600;
+  font-size: 0.95rem;
 }
 
-.expiry-text {
-  font-size: 0.85rem;
-  color: #a0aec0;
+.status-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #cbd5e1;
+}
+
+.status-dot.online {
+  background-color: #22c55e;
+  box-shadow: 0 0 8px rgba(34, 197, 94, 0.4);
+}
+
+.status-text {
+  font-size: 0.9rem;
+  color: #475569;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+/* --- Actions --- */
 .server-actions {
   display: flex;
-  gap: 0.75rem;
+  gap: 1rem;
+  border-top: 1px solid #f1f5f9;
+  padding-top: 1.25rem;
 }
 
 .server-actions button {
   flex: 1;
+  padding: 0.6rem;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.status-message {
+  text-align: center;
+  color: #64748b;
+  padding: 3rem;
+  background: white;
+  border-radius: 12px;
+  border: 1px dashed #cbd5e1;
+}
+
+.status-message.error {
+  color: #ef4444;
+  border-color: #fca5a5;
+  background: #fef2f2;
 }
