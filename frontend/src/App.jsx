@@ -28,6 +28,15 @@ function App() {
         <Route path="/register" element={<SignupPage />} />
 
         <Route path="/payment" element={<PaymentPage />} />
+        <Route
+          path="/dashboard"
+          element={
+            <div style={{ color: "white", padding: "20px", textAlign: "center" }}>
+              <h1>Welcome to your Dashboard!</h1>
+              <p>Your server is being provisioned.</p>
+            </div>
+          }
+        />
       </Routes>
     </Router>
   );

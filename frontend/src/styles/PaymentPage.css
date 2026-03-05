@@ -57,6 +57,53 @@
     box-shadow: 0 0 20px rgba(94, 157, 52, 0.2);
 }
 
+.ngrok-config {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ngrok-config label {
+    font-size: 14px;
+    color: #aaa;
+    font-weight: 600;
+}
+
+.ngrok-config input {
+    background: #111;
+    border: 1px solid #444;
+    padding: 10px;
+    border-radius: 4px;
+    color: white;
+    font-family: monospace;
+}
+
+.ngrok-config small {
+    color: #777;
+    font-size: 11px;
+}
+
+.qr-box {
+    background: white;
+    padding: 15px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.qr-code-image {
+    width: 100%;
+    max-width: 250px;
+    height: auto;
+    border-radius: 8px;
+}
+
 .qr-code {
     width: 250px;
     height: 250px;
@@ -69,10 +116,33 @@
     border: #5E9D34 4px solid;
 }
 
-.tl { top: -10px; left: -10px; border-right: none; border-bottom: none; }
-.tr { top: -10px; right: -10px; border-left: none; border-bottom: none; }
-.bl { bottom: -10px; left: -10px; border-right: none; border-top: none; }
-.br { bottom: -10px; right: -10px; border-left: none; border-top: none; }
+.tl {
+    top: -10px;
+    left: -10px;
+    border-right: none;
+    border-bottom: none;
+}
+
+.tr {
+    top: -10px;
+    right: -10px;
+    border-left: none;
+    border-bottom: none;
+}
+
+.bl {
+    bottom: -10px;
+    left: -10px;
+    border-right: none;
+    border-top: none;
+}
+
+.br {
+    bottom: -10px;
+    right: -10px;
+    border-left: none;
+    border-top: none;
+}
 
 .qr-details {
     display: flex;
@@ -84,7 +154,8 @@
     border-radius: 15px;
 }
 
-.merchant-info, .amount-info {
+.merchant-info,
+.amount-info {
     display: flex;
     justify-content: space-between;
     align-items: center;

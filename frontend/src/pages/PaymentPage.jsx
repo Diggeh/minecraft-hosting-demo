@@ -1,26 +1,102 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
+import QRCode from "react-qr-code";
 import "../styles/PaymentPage.css";
-import qrPlaceholder from "../assets/qr.png";
 
 const PaymentPage = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { plan } = location.state || { plan: { name: "Starter", price: 249 } };
+
+  const [status, setStatus] = useState("pending");
+  const [payment, setPayment] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [localIp, setLocalIp] = useState("");
+
+  const API_BASE = "http://localhost:5000/api";
+
+  useEffect(() => {
+    const initPage = async () => {
+      try {
+        const payRes = await axios.post(`${API_BASE}/payments/create`, {
+          userId: "65e69e776077556066777777",
+          planId: plan.name,
+          amount: plan.price,
+        });
+        setPayment(payRes.data);
+
+        try {
+          const ipRes = await axios.get(`${API_BASE}/status/ip`);
+          setLocalIp(ipRes.data.ip);
+        } catch (ipErr) {
+          console.warn("Could not discover local IP, falling back to localhost");
+          setLocalIp("localhost");
+        }
+      } catch (err) {
+        console.error("Initialization failed", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    initPage();
+  }, [plan]);
+
+  useEffect(() => {
+    if (!payment || status === "completed") return;
+
+    const interval = setInterval(async () => {
+      try {
+        const res = await axios.get(`${API_BASE}/payments/${payment._id}/status`);
+        if (res.data.status === "completed") {
+          setStatus("completed");
+          clearInterval(interval);
+          setTimeout(() => navigate("/dashboard"), 3000);
+        }
+      } catch (err) {
+        console.error("Error polling payment status", err);
+      }
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [payment, status, navigate]);
+
+  if (loading) return <div className="payment-page">Loading payment session...</div>;
+
+  const scanLink = `http://${localIp || "localhost"}:5000/api/payments/scan/demo`;
+
   return (
     <div className="payment-page">
       <div className="payment-container">
         <div className="payment-header">
-          <h1>Complete Your Purchase</h1>
+          <h1>{status === "completed" ? "Payment Successful!" : "Complete Your Purchase"}</h1>
           <p>
-            Scan the QR code below using your favorite banking or e-wallet app
-            to pay.
+            {status === "completed"
+              ? "We've confirmed your payment. Preparing your server..."
+              : `Scan the QR code below with your phone (on the same Wi-Fi) to activate your server.`}
           </p>
         </div>
 
         <div className="qr-section">
           <div className="qr-wrapper">
-            <img
-              src={qrPlaceholder}
-              alt="QRPH Payment Code"
-              className="qr-code"
-            />
+            {status === "completed" ? (
+              <div className="success-icon" style={{ fontSize: "100px", textAlign: "center", display: "block", color: "#4caf50" }}>
+                ✅
+              </div>
+            ) : (
+              <div className="qr-box">
+                {localIp ? (
+                  <QRCode
+                    value={scanLink}
+                    size={256}
+                    style={{ height: "auto", maxWidth: "100%", width: "100%" }}
+                    viewBox={`0 0 256 256`}
+                  />
+                ) : (
+                  <div className="loading-qr">Generating QR...</div>
+                )}
+              </div>
+            )}
             <div className="qr-border tl"></div>
             <div className="qr-border tr"></div>
             <div className="qr-border bl"></div>
@@ -33,24 +109,31 @@ const PaymentPage = () => {
             </div>
             <div className="amount-info">
               <span className="label">Amount Due:</span>
-              <span className="value accent">₱000.00</span>
+              <span className="value accent">₱{plan.price}.00</span>
             </div>
           </div>
         </div>
 
-        <div className="payment-instructions">
-          <h2>Instructions:</h2>
-          <ol>
-            <li>Open your GCash, Maya, or any QRPH-supported app.</li>
-            <li>Scan the QR code.</li>
-            <li>Verify the amount and merchant details.</li>
-            <li>Confirm the payment in your app.</li>
-          </ol>
-          <p className="note">
-            Keep this page open. Your account will be upgraded automatically
-            once payment is confirmed.
-          </p>
+        <div className="payment-footer">
+          <button className="cancel-btn" onClick={() => navigate("/")}>
+            Cancel Payment
+          </button>
         </div>
+
+        {status !== "completed" && (
+          <div className="payment-instructions">
+            <h2>Instructions:</h2>
+            <ol>
+              <li>Open your GCash, Maya, or any QRPH-supported app.</li>
+              <li>Scan the QR code.</li>
+              <li>Verify the amount and merchant details.</li>
+              <li>Confirm the payment in your app.</li>
+            </ol>
+            <p className="note">
+              Keep this page open. Your account will be upgraded automatically once payment is confirmed.
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );
