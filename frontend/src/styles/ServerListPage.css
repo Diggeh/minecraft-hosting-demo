@@ -3,8 +3,8 @@
 
 .server-list-container {
   min-height: 100vh;
-  background-color: #0e0e0e; /* Lighter, cleaner background */
-  font-family: "Inter", sans-serif; /* Standard Figma font */
+  background-color: #0e0e0e;
+  font-family: "Inter", sans-serif;
 }
 
 .server-list-content {
@@ -22,7 +22,6 @@
 }
 
 .header-titles h1 {
-  font-family: "Kdam Thmor Pro", sans-serif;
   font-size: 2rem;
   color: #ffffff;
   margin: 0 0 0.5rem 0;
@@ -30,10 +29,9 @@
 }
 
 .header-titles .subtitle {
-  font-family: "Kdam Thmor Pro", sans-serif;
   color: #ffffff;
   margin: 0;
-  font-size: 1.1rem;
+  font-size: 1rem;
 }
 
 .create-btn {
@@ -43,42 +41,72 @@
   background-color: #366417;
 }
 
-/* --- Grid & Card Styles --- */
-.server-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 1.5rem;
+/* --- Rectangle Card Styles --- */
+.server-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem; /* Space between rows */
 }
 
 .server-card {
+  position: relative; /* Required so we can position the slim line inside it */
+  display: flex;
+  justify-content: space-between; /* Text left, buttons right */
+  align-items: center;
   background: #303030;
   border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e2e8f0;
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
+  padding: 1.5rem 2rem 1.5rem 3rem; /* Extra padding on the left for the line */
+  box-shadow: 0 1px 1px #366417;
 }
 
-.server-card:hover {
-  box-shadow:
-    0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  transform: translateY(-2px);
+/* --- The Slim Rounded Line --- */
+.status-line {
+  position: absolute;
+  left: 12px; /* Pushes it slightly off the exact edge */
+  top: 16px;
+  bottom: 16px;
+  width: 6px; /* How slim it is */
+  border-radius: 10px; /* Gives it the perfectly rounded edges */
 }
 
-.server-card-header {
+.line-green {
+  background-color: #22c55e;
+}
+
+.line-red {
+  background-color: #ef4444;
+}
+
+/* --- Left Side: Server Info --- */
+.server-info {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.25rem;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
-.server-card-header h2 {
+.server-info h2 {
   font-size: 1.25rem;
   color: #1e293b;
   margin: 0;
+  font-weight: 600;
+}
+
+.ip-text {
+  font-size: 0.95rem;
+  color: #64748b;
+  margin: 0;
+}
+
+/* --- Right Side: Actions & Buttons --- */
+.server-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.server-actions button {
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
   font-weight: 600;
 }
 
@@ -86,83 +114,21 @@
   background: none;
   border: none;
   color: #94a3b8;
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   cursor: pointer;
   letter-spacing: 2px;
+  padding: 0 0.5rem !important;
+  margin-left: 0.5rem;
+  transform: translateY(
+    -2px
+  ); /* Lifts the dots slightly to center them visually */
 }
 
 .options-menu-btn:hover {
   color: #475569;
 }
 
-/* --- Server Details --- */
-.server-details {
-  margin-bottom: 1.5rem;
-}
-
-.ip-label {
-  font-size: 0.85rem;
-  color: #64748b;
-  margin: 0 0 0.5rem 0;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  font-weight: 600;
-}
-
-.ip-container {
-  background: #f1f5f9;
-  padding: 0.75rem 1rem;
-  border-radius: 8px;
-  margin-bottom: 1rem;
-}
-
-.ip-container code {
-  color: #334155;
-  font-family: "Courier New", Courier, monospace;
-  font-weight: 600;
-  font-size: 0.95rem;
-}
-
-.status-row {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.status-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background-color: #cbd5e1;
-}
-
-.status-dot.online {
-  background-color: #22c55e;
-  box-shadow: 0 0 8px rgba(34, 197, 94, 0.4);
-}
-
-.status-text {
-  font-size: 0.9rem;
-  color: #475569;
-  font-weight: 500;
-  text-transform: capitalize;
-}
-
-/* --- Actions --- */
-.server-actions {
-  display: flex;
-  gap: 1rem;
-  border-top: 1px solid #f1f5f9;
-  padding-top: 1.25rem;
-}
-
-.server-actions button {
-  flex: 1;
-  padding: 0.6rem;
-  border-radius: 6px;
-  font-weight: 600;
-}
-
+/* --- Utilities --- */
 .status-message {
   text-align: center;
   color: #64748b;
