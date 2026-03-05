@@ -11,3 +11,6 @@ node_modules/
 # Build outputs
 dist/
 build/
+
+# Debug logs
+debug_payment.logs
