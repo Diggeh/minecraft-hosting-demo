@@ -14,9 +14,10 @@ app.use(express.json()); // Allows your backend to understand JSON data
 // Import Routes
 const authRoutes = require("./routes/authRoutes");
 const serverRoutes = require("./routes/serverRoutes");
+const { protect } = require("./middleware/authMiddleware");
 
 app.use("/api/auth", authRoutes);
-app.use("/api/servers", serverRoutes);
+app.use("/api/servers", protect, serverRoutes);
 
 // Basic test route to check if the server is running
 app.get("/api/status", (req, res) => {

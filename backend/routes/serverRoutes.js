@@ -17,9 +17,9 @@ const craftyApi = axios.create({
 // ==========================================
 // ROUTE 1: Create a New Minecraft Server
 // ==========================================
-router.post("/create", async (req, res) => {
+router.post("/create", protect, async (req, res) => {
   try {
-    const { serverName, ownerId } = req.body;
+    const { serverName } = req.body;
 
     // Generate a random port between 25565 and 26000 for this new server
     const randomPort = Math.floor(Math.random() * (26000 - 25565 + 1)) + 25565;
@@ -54,7 +54,7 @@ router.post("/create", async (req, res) => {
 
     // 2. Save the bridge data into our MongoDB
     const myDbServer = await Server.create({
-      owner: ownerId,
+      owner: req.user.id, // Link this server to the logged-in user's ID
       crafty_server_id: newServerId || "TEMP_ID", // Failsafe in case the ID location changed
       serverName: serverName,
       port: randomPort,
@@ -73,7 +73,7 @@ router.post("/create", async (req, res) => {
 // ==========================================
 // ROUTE 2: Start an Existing Server
 // ==========================================
-router.post("/:id/start", async (req, res) => {
+router.post("/:id/start", protect, async (req, res) => {
   try {
     const server = await Server.findById(req.params.id);
     if (!server)
@@ -121,7 +121,7 @@ router.post("/:id/start", async (req, res) => {
 // ==========================================
 // ROUTE 3: Stop an Existing Server
 // ==========================================
-router.post("/:id/stop", async (req, res) => {
+router.post("/:id/stop", protect, async (req, res) => {
   try {
     const server = await Server.findById(req.params.id);
     if (!server)
@@ -158,7 +158,7 @@ router.get("/", protect, async (req, res) => {
 // ==========================================
 // ROUTE 5: Delete an Existing Server
 // ==========================================
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", protect, async (req, res) => {
   try {
     const server = await Server.findById(req.params.id);
     if (!server)
@@ -199,7 +199,7 @@ router.delete("/:id", async (req, res) => {
 // ==========================================
 // ROUTE 6: Get Live Server Status
 // ==========================================
-router.get("/:id/status", async (req, res) => {
+router.get("/:id/status", protect, async (req, res) => {
   try {
     // 1. Find the server in your MongoDB
     const server = await Server.findById(req.params.id);
@@ -223,7 +223,7 @@ router.get("/:id/status", async (req, res) => {
 
 // Update Server
 
-router.patch("/:id/update", async (req, res) => {
+router.patch("/:id/update", protect, async (req, res) => {
   try {
     const server = await Server.findById(req.params.id);
     if (!server)
