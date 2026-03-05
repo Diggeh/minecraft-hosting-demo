@@ -1,6 +1,6 @@
 import "./Button.css";
 
-export default function Button ({ text, type = "button", className = "", ...props}) {
+export default function Button({ text, children, type = "button", className = "", ...props }) {
     return (
         <button
             type={type}
@@ -8,6 +8,7 @@ export default function Button ({ text, type = "button", className = "", ...prop
             {...props}
         >
             {text}
+            {children}
         </button>
     )
 };

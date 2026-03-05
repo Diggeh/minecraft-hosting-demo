@@ -1,145 +1,206 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Kdam+Thmor+Pro&family=Mina:wght@400;700&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Kdam+Thmor+Pro&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Kdam+Thmor+Pro&display=swap");
 
 .server-list-container {
   min-height: 100vh;
   background-color: #0e0e0e;
   font-family: "Inter", sans-serif;
+  color: #ffffff;
 }
 
 .server-list-content {
-  max-width: 1100px;
+  max-width: 1000px;
   margin: 0 auto;
-  padding: 3rem 2rem;
+  padding: 4rem 2rem;
 }
 
-/* --- Header Styles --- */
+/* --- Header --- */
 .server-list-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 3rem;
+  align-items: flex-end;
+  margin-bottom: 4rem;
 }
 
 .header-titles h1 {
-  font-size: 2rem;
-  color: #ffffff;
-  margin: 0 0 0.5rem 0;
-  font-weight: 700;
+  font-family: "Kdam Thmor Pro", sans-serif;
+  font-size: 3.5rem;
+  margin: 0;
+  line-height: 1;
+  letter-spacing: -1px;
 }
 
 .header-titles .subtitle {
+  font-size: 1.1rem;
   color: #ffffff;
-  margin: 0;
-  font-size: 1rem;
+  margin: 0.5rem 0 0 0;
+  opacity: 0.9;
 }
 
-.create-btn {
-  padding: 0.75rem 1.5rem;
-  font-weight: 600;
-  border-radius: 8px;
-  background-color: #366417;
+.create-server-btn {
+  background-color: #366417 !important;
+  color: #ffffff !important;
+  padding: 0.8rem 1.8rem !important;
+  border-radius: 50px !important;
+  font-family: "Kdam Thmor Pro", sans-serif !important;
+  font-size: 1.5rem !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 1rem !important;
+  border: none !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  box-shadow: 0 4px 15px rgba(54, 100, 23, 0.3);
 }
 
-/* --- Rectangle Card Styles --- */
+.create-server-btn:hover {
+  transform: translateY(-2px) scale(1.02);
+  background-color: #40751c !important;
+  box-shadow: 0 6px 20px rgba(54, 100, 23, 0.4);
+}
+
+.create-server-btn svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* --- Server List --- */
 .server-list {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem; /* Space between rows */
+  gap: 1.5rem;
 }
 
 .server-card {
-  position: relative; /* Required so we can position the slim line inside it */
-  display: flex;
-  justify-content: space-between; /* Text left, buttons right */
-  align-items: center;
-  background: #303030;
+  background: #232323;
   border-radius: 12px;
-  padding: 1.5rem 2rem 1.5rem 3rem; /* Extra padding on the left for the line */
-  box-shadow: 0 1px 1px #366417;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  padding: 0 1.5rem 0 0.5rem;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s ease;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-/* --- The Slim Rounded Line --- */
-.status-line {
-  position: absolute;
-  left: 12px; /* Pushes it slightly off the exact edge */
-  top: 16px;
-  bottom: 16px;
-  width: 6px; /* How slim it is */
-  border-radius: 10px; /* Gives it the perfectly rounded edges */
+.server-card:hover {
+  background: #2a2a2a;
+  border-color: rgba(255, 255, 255, 0.1);
 }
 
-.line-green {
-  background-color: #22c55e;
+/* Status Indicator (Far Left) */
+.status-indicator {
+  width: 6px;
+  height: 60px;
+  border-radius: 4px;
+  margin-left: 8px;
 }
 
-.line-red {
-  background-color: #ef4444;
+.is-running {
+  background-color: #366417;
+  box-shadow: 0 0 10px rgba(54, 100, 23, 0.5);
 }
 
-/* --- Left Side: Server Info --- */
-.server-info {
+.is-stopped {
+  background-color: #c42f2f;
+  box-shadow: 0 0 10px rgba(196, 47, 47, 0.5);
+}
+
+/* Main Info Section */
+.server-main-info {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-left: 1.5rem;
+  flex: 1;
+}
+
+.server-icon-wrapper {
+  width: 50px;
+  height: 50px;
+  background-color: #3b3b3b;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #555;
+}
+
+.server-inner-icon {
+  width: 32px;
+  height: 24px;
+  border: 2px solid #ccc;
+  border-radius: 3px;
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  align-items: center;
+  justify-content: center;
 }
 
-.server-info h2 {
-  font-size: 1.25rem;
-  color: #1e293b;
+.icon-screen {
+  width: 22px;
+  height: 14px;
+  border-bottom: 2px solid #ccc;
+  margin-bottom: 2px;
+}
+
+.icon-dots {
+  display: flex;
+  gap: 2px;
+}
+
+.icon-dots::before,
+.icon-dots::after {
+  content: "";
+  width: 3px;
+  height: 3px;
+  background-color: #ccc;
+  border-radius: 50%;
+}
+
+.server-text-details h2 {
+  font-family: "Kdam Thmor Pro", sans-serif;
+  font-size: 1.4rem;
   margin: 0;
-  font-weight: 600;
+  color: #ffffff;
 }
 
-.ip-text {
-  font-size: 0.95rem;
-  color: #64748b;
-  margin: 0;
+.ip-display {
+  font-size: 0.9rem;
+  color: #888;
+  margin: 0.1rem 0 0 0;
 }
 
-/* --- Right Side: Actions & Buttons --- */
-.server-actions {
+/* Action Group */
+.server-action-group {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.icon-action-btn {
+  width: 40px;
+  height: 40px;
+  background-color: #3b3b3b;
+  border: none;
+  border-radius: 6px;
+  color: #bbb;
   display: flex;
   align-items: center;
-  gap: 1rem;
-}
-
-.server-actions button {
-  padding: 0.6rem 1.2rem;
-  border-radius: 6px;
-  font-weight: 600;
-}
-
-.options-menu-btn {
-  background: none;
-  border: none;
-  color: #94a3b8;
-  font-size: 1.5rem;
+  justify-content: center;
   cursor: pointer;
-  letter-spacing: 2px;
-  padding: 0 0.5rem !important;
-  margin-left: 0.5rem;
-  transform: translateY(
-    -2px
-  ); /* Lifts the dots slightly to center them visually */
+  transition: all 0.2s ease;
 }
 
-.options-menu-btn:hover {
-  color: #475569;
+.icon-action-btn:hover {
+  background-color: #4a4a4a;
+  color: #ffffff;
 }
 
-/* --- Utilities --- */
+/* Utility Messages */
 .status-message {
   text-align: center;
-  color: #64748b;
-  padding: 3rem;
-  background: white;
+  padding: 4rem;
+  background: #1a1a1a;
   border-radius: 12px;
-  border: 1px dashed #cbd5e1;
-}
-
-.status-message.error {
-  color: #ef4444;
-  border-color: #fca5a5;
-  background: #fef2f2;
+  color: #888;
 }

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Button from "../components/Button";
 import { getUserServers } from "../services/api";
+import { Play, Square, RotateCcw, Plus } from "lucide-react";
 import "../styles/ServerListPage.css";
 
 const ServerListPage = () => {
@@ -35,7 +36,10 @@ const ServerListPage = () => {
               Manage all your game servers in one place
             </p>
           </div>
-          <Button className="primary-btn create-btn">Create Server +</Button>
+          <Button className="create-server-btn">
+            <span>Create Server</span>
+            <Plus size={24} />
+          </Button>
         </header>
 
         {loading && <p className="status-message">Loading your servers...</p>}
@@ -46,32 +50,36 @@ const ServerListPage = () => {
           </p>
         )}
 
-        {/* The Long Rectangle List */}
         <div className="server-list">
           {servers.map((server) => (
             <div key={server._id} className="server-card">
-              {/* THE SLIM ROUNDED LINE ON THE LEFT */}
               <div
-                className={`status-line ${server.status === "running" ? "line-green" : "line-red"}`}
+                className={`status-indicator ${server.status === "running" ? "is-running" : "is-stopped"}`}
               ></div>
 
-              {/* LEFT SIDE: Info */}
-              <div className="server-info">
-                <h2>{server.serverName}</h2>
-                <p className="ip-text">Placeholder Server.IP</p>
+              <div className="server-main-info">
+                <div className="server-icon-wrapper">
+                  <div className="server-inner-icon">
+                    <div className="icon-screen"></div>
+                    <div className="icon-dots"></div>
+                  </div>
+                </div>
+                <div className="server-text-details">
+                  <h2>{server.serverName || "Server Name"}</h2>
+                  <p className="ip-display">Placeholder.Server.IP</p>
+                </div>
               </div>
 
-              {/* RIGHT SIDE: 3 Buttons */}
-              <div className="server-actions">
-                <Button className="secondary-btn">Manage</Button>
-                <Button
-                  className={
-                    server.status === "running" ? "danger-btn" : "success-btn"
-                  }
-                >
-                  {server.status === "running" ? "Stop" : "Start"}
-                </Button>
-                <button className="options-menu-btn">•••</button>
+              <div className="server-action-group">
+                <button className="icon-action-btn">
+                  <Play size={18} fill="currentColor" />
+                </button>
+                <button className="icon-action-btn">
+                  <Square size={18} fill="currentColor" />
+                </button>
+                <button className="icon-action-btn">
+                  <RotateCcw size={18} />
+                </button>
               </div>
             </div>
           ))}
