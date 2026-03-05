@@ -1,0 +1,230 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Kdam+Thmor+Pro&display=swap");
+
+.server-list-container {
+  min-height: 100vh;
+  background-color: #0e0e0e;
+  font-family: "Inter", sans-serif;
+  color: #ffffff;
+}
+
+.server-list-content {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 4rem 2rem;
+}
+
+/* --- Header --- */
+.server-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 4rem;
+}
+
+.header-titles h1 {
+  font-family: "Kdam Thmor Pro", sans-serif;
+  font-size: 3.5rem;
+  margin: 0;
+  line-height: 1;
+  letter-spacing: -1px;
+}
+
+.header-titles .subtitle {
+  font-size: 1.1rem;
+  color: #ffffff;
+  margin: 0.5rem 0 0 0;
+  opacity: 0.9;
+}
+
+.create-server-btn {
+  background-color: #366417 !important;
+  color: #ffffff !important;
+  padding: 0.8rem 1.8rem !important;
+  border-radius: 50px !important;
+  font-family: "Kdam Thmor Pro", sans-serif !important;
+  font-size: 1.5rem !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 1rem !important;
+  border: none !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  box-shadow: 0 4px 15px rgba(54, 100, 23, 0.3);
+}
+
+.create-server-btn:hover {
+  transform: translateY(-2px) scale(1.02);
+  background-color: #40751c !important;
+  box-shadow: 0 6px 20px rgba(54, 100, 23, 0.4);
+}
+
+/* --- Server List --- */
+.server-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.server-card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.server-card {
+  background: #232323;
+  border-radius: 12px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  padding: 0 1.5rem 0 0.5rem;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s ease;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.server-card:hover {
+  background: #2a2a2a;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Status Indicator (Far Left) */
+.status-indicator {
+  width: 6px;
+  height: 60px;
+  border-radius: 4px;
+  margin-left: 8px;
+}
+
+.is-running {
+  background-color: #366417;
+  box-shadow: 0 0 10px rgba(54, 100, 23, 0.5);
+}
+
+.is-stopped {
+  background-color: #c42f2f;
+  box-shadow: 0 0 10px rgba(196, 47, 47, 0.5);
+}
+
+/* Main Info Section */
+.server-main-info {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-left: 1rem;
+  flex: 1;
+}
+
+.server-icon-wrapper {
+  width: 42px;
+  height: 42px;
+  background-color: #2a2a2a;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.server-text-details h2 {
+  font-family: "Kdam Thmor Pro", sans-serif;
+  font-size: 1.5rem;
+  margin: 0;
+  color: #ffffff;
+}
+
+.ip-display {
+  font-size: 0.85rem;
+  color: #888;
+  margin: 0.1rem 0 0 0;
+}
+
+/* Status Text Section (Center) */
+.server-status-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.status-label-text {
+  font-family: inherit;
+  font-size: 1.2rem;
+  color: #555;
+  text-transform: uppercase;
+  font-weight: 600;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.status-label-text.online {
+  color: #4CAF50;
+}
+
+.uptime-numbers {
+  font-family: "Kdam Thmor Pro", sans-serif;
+  font-size: 1.6rem;
+  letter-spacing: 2px;
+}
+
+.uptime-labels {
+  display: flex;
+  gap: 0.8rem;
+  font-size: 0.6rem;
+  color: #888;
+  margin-top: -4px;
+  text-transform: capitalize;
+  font-weight: normal;
+}
+
+/* Action Group */
+.server-action-group {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.icon-action-btn {
+  width: 36px;
+  height: 36px;
+  background-color: #333;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.icon-action-btn:hover {
+  background-color: #444;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.icon-action-btn .action-icon-img {
+  width: 16px;
+  height: 16px;
+  opacity: 0.8;
+  filter: brightness(0) invert(1);
+}
+
+.server-main-icon-svg {
+  width: 24px;
+  height: 24px;
+  filter: brightness(0) invert(1);
+}
+
+.icon-action-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Utility Messages */
+.status-message {
+  text-align: center;
+  padding: 4rem;
+  background: #1a1a1a;
+  border-radius: 12px;
+  color: #888;
+}

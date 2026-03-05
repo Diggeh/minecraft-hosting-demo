@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -6,39 +6,61 @@ import {
   Navigate,
 } from "react-router-dom";
 
-// Import our new page!
-import LoginPage from "./pages/LoginPage";
-import LandingPage from "./pages/LandingPage";
 import Navbar from "./components/Navbar";
+import LandingPage from "./pages/LandingPage";
+import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import PaymentPage from "./pages/PaymentPage";
-
 import Profile from "./pages/Profile";
+import ServerDashboardPage from "./pages/ServerDashboardPage";
+import ServerListPage from "./pages/ServerListPage"; // 1. Import your new page
+
+// 2. Import the AuthContext so we can check if a user is logged in
+import { AuthContext } from "./contexts/authContext";
+
+// 3. Create a wrapper component to protect private routes
+const ProtectedRoute = ({ children }) => {
+  const { user, loading } = useContext(AuthContext);
+
+  // Wait for the auth context to finish checking localStorage
+  if (loading) return <div style={{ padding: "20px" }}>Loading...</div>;
+
+  // If no user is found, redirect them to the login page
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  // If they are logged in, render the requested page (ServerListPage)
+  return children;
+};
 
 function App() {
   return (
     <Router>
       <Navbar />
       <Routes>
-        {/* Automatically redirect users to Landing page*/}
         <Route path="/" element={<LandingPage />} />
-
-        {/* The Login Route */}
         <Route path="/login" element={<LoginPage />} />
-
         <Route path="/register" element={<SignupPage />} />
 
         <Route path="/payment" element={<PaymentPage />} />
         <Route path="/profile" element={<Profile />} />
 
-        {/* Placeholder for the Dashboard we will build next */}
+        {/* 4. The newly protected Server List route */}
         <Route
-          path="/dashboard"
+          path="/servers"
           element={
-            <div style={{ color: "white", padding: "20px", textAlign: "center" }}>
-              <h1>Welcome to your Dashboard!</h1>
-              <p>Your server is being provisioned.</p>
-            </div>
+            <ProtectedRoute>
+              <ServerListPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/servers/:id"
+          element={
+            <ProtectedRoute>
+              <ServerDashboardPage />
+            </ProtectedRoute>
           }
         />
       </Routes>

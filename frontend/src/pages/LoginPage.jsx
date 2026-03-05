@@ -23,6 +23,8 @@ const LoginPage = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
+    e.preventDefault();
+    setError("");
 
     if (email.trim() === "" || password.trim() === "") {
       setError("Please fill out all required fields.");
@@ -40,7 +42,8 @@ const LoginPage = () => {
 
       login(response.data, response.data.token);
 
-      navigate("/dashboard");
+      // 3. Smoothly navigate to the servers page without reloading the browser
+      navigate("/servers");
     } catch (err) {
       setError(
         err.response?.data?.message ||

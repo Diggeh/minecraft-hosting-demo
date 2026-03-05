@@ -7,6 +7,7 @@
   top: 0;
   z-index: 100;
 }
+
 .header-container {
   max-width: 100%;
   margin: 0 auto;
@@ -16,6 +17,7 @@
   align-items: center;
   gap: 2rem;
 }
+
 .logo {
   display: flex;
   align-items: center;
@@ -35,6 +37,7 @@
   font-size: 1.75rem;
   font-weight: 700;
 }
+
 .navigation {
   display: flex;
   gap: 2rem;
@@ -74,9 +77,11 @@
   color: rgb(255, 255, 255);
 }
 
-.profile-btn img {
-  width: 125%;
-  margin-top: 5px;
+.profile-btn .profile-icon-svg {
+  width: 28px;
+  height: 28px;
+  filter: brightness(0) invert(1);
+  /* Make it white */
 }
 
 .line {
@@ -102,7 +107,7 @@
     font-size: 1.4rem;
   }
 
-  .navigation > a {
+  .navigation>a {
     display: none;
   }
 
