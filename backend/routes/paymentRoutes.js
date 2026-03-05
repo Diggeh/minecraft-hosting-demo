@@ -13,7 +13,7 @@ function logToFile(msg) {
     console.log(msg);
 }
 
-// Re-using the Crafty API setup (ideally this should be in a separate service)
+// Crafty API Setup
 const craftyApi = axios.create({
     baseURL: process.env.CRAFTY_API_URL,
     headers: { Authorization: `Bearer ${process.env.CRAFTY_API_TOKEN}` },
@@ -104,7 +104,7 @@ router.get("/scan/:id", async (req, res) => {
             logToFile(`🔧 URL: ${baseUrl}`);
             logToFile(`🔧 Token Prefix: ${token ? token.substring(0, 10) + "..." : "MISSING"}`);
 
-            // Re-creating the client inside the route just to be absolutely sure env vars are fresh
+            // Re-creating the client inside the route 
             const localCraftyApi = axios.create({
                 baseURL: baseUrl,
                 headers: { Authorization: `Bearer ${token}` },
