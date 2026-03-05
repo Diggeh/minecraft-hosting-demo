@@ -2,7 +2,7 @@ import React from "react";
 import { useLocation, Link } from "react-router-dom"; // 1. Added Link
 import "./Navbar.css";
 import logo from "../assets/logo.png";
-import profileIcon from "../assets/icon_profile.svg";
+import personIcon from "../assets/icon_person.svg";
 
 export default function Navbar() {
   const location = useLocation();
@@ -33,7 +33,7 @@ export default function Navbar() {
             <div className="line"></div>
             <div className="profile-btn">
               <Link to="/login">
-                <img src={profileIcon} alt="Login" />
+                <img src={personIcon} alt="Profile" className="profile-icon-svg" />
               </Link>
               <Link to="/login">Login</Link>
             </div>

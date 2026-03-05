@@ -77,9 +77,11 @@
   color: rgb(255, 255, 255);
 }
 
-.profile-btn img {
-  width: 125%;
-  margin-top: 5px;
+.profile-btn .profile-icon-svg {
+  width: 28px;
+  height: 28px;
+  filter: brightness(0) invert(1);
+  /* Make it white */
 }
 
 .line {

@@ -6,11 +6,11 @@ import {
   Navigate,
 } from "react-router-dom";
 
-import CreateServerPage from "./pages/CreateServerPage";
 import LoginPage from "./pages/LoginPage";
 import LandingPage from "./pages/LandingPage";
 import Navbar from "./components/Navbar";
 import SignupPage from "./pages/SignupPage";
+import ServerDashboardPage from "./pages/ServerDashboardPage";
 import ServerListPage from "./pages/ServerListPage"; // 1. Import your new page
 
 // 2. Import the AuthContext so we can check if a user is logged in
@@ -51,10 +51,10 @@ function App() {
           }
         />
         <Route
-          path="/create-server"
+          path="/servers/:id"
           element={
             <ProtectedRoute>
-              <CreateServerPage />
+              <ServerDashboardPage />
             </ProtectedRoute>
           }
         />

@@ -33,7 +33,7 @@ const SignupPage = () => {
     }
 
     try {
-      const response = await api.post("users/register", {username, email, passwords: passwords.password})
+      const response = await api.post("users/register", { username, email, passwords: passwords.password })
     } catch (err) {
       setError("Failed to register. Try again.")
     }
@@ -49,9 +49,9 @@ const SignupPage = () => {
         <div className="signup-input-container">
           <div className="signup-input-body forty">
             <img src={iconPerson} />
-            <input 
-              type="text" 
-              placeholder="Username" 
+            <input
+              type="text"
+              placeholder="Username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
@@ -59,9 +59,9 @@ const SignupPage = () => {
           </div>
           <div className="signup-input-body sixty">
             <img src={iconMail} />
-            <input 
-              type="text" 
-              placeholder="Email" 
+            <input
+              type="text"
+              placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -69,10 +69,10 @@ const SignupPage = () => {
           </div>
           <div className="signup-input-body wide">
             <img src={iconKey} />
-            <input 
+            <input
               name="password"
-              type="password" 
-              placeholder="Password" 
+              type="password"
+              placeholder="Password"
               value={passwords.password}
               onChange={handlePasswordChange}
               required
@@ -81,10 +81,10 @@ const SignupPage = () => {
           </div>
           <div className="signup-input-body wide">
             <img src={iconKey} />
-            <input 
+            <input
               name="confirmPassword"
-              type="password" 
-              placeholder="Re-enter password" 
+              type="password"
+              placeholder="Re-enter password"
               value={passwords.confirmPassword}
               onChange={handlePasswordChange}
               required

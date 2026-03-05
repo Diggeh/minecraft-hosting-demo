@@ -1,0 +1,296 @@
+/* =============================================
+   Server Configuration Styles  
+   ============================================= */
+
+.server-config {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 28px;
+    padding: 28px 32px;
+    align-items: start;
+}
+
+@media (max-width: 800px) {
+    .server-config {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Status messages when loading */
+.config-status {
+    padding: 40px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.95rem;
+}
+
+.config-status.error {
+    color: #f87171;
+}
+
+/* Form */
+.config-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.config-section-title {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.35);
+    margin: 0 0 16px;
+    padding-top: 8px;
+}
+
+.config-section-title:first-child {
+    padding-top: 0;
+}
+
+.config-divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.07);
+    margin: 20px 0 24px;
+}
+
+.config-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+.config-field-inline {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.config-label {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.85);
+    cursor: default;
+}
+
+.config-desc {
+    font-weight: 400;
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.35);
+}
+
+.config-input {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 9px 12px;
+    color: rgba(255, 255, 255, 0.88);
+    font-size: 0.875rem;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+    box-sizing: border-box;
+}
+
+.config-input:focus {
+    border-color: rgba(99, 102, 241, 0.6);
+    background: rgba(99, 102, 241, 0.05);
+}
+
+.config-input:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.config-input-short {
+    width: 100px;
+    min-width: 100px;
+    flex-shrink: 0;
+}
+
+/* Toggles */
+.config-toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.config-toggle-row:last-of-type {
+    border-bottom: none;
+}
+
+.config-toggle-label-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+}
+
+.config-toggle-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.config-toggle-desc {
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.35);
+}
+
+.config-toggle {
+    width: 46px;
+    height: 26px;
+    border-radius: 13px;
+    border: none;
+    cursor: pointer;
+    padding: 3px;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    transition: background 0.2s;
+    position: relative;
+}
+
+.config-toggle.off {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.config-toggle.on {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+}
+
+.toggle-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #fff;
+    transition: transform 0.2s;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+    position: absolute;
+    left: 3px;
+}
+
+.config-toggle.on .toggle-thumb {
+    transform: translateX(20px);
+}
+
+/* Save / Cancel */
+.config-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 28px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+    flex-wrap: wrap;
+}
+
+.config-save-btn {
+    padding: 9px 24px;
+    border-radius: 9px;
+    border: 1px solid rgba(99, 102, 241, 0.5);
+    background: rgba(99, 102, 241, 0.2);
+    color: #a5b4fc;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.config-save-btn:hover:not(:disabled) {
+    background: rgba(99, 102, 241, 0.35);
+    color: #c7d2fe;
+}
+
+.config-save-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+.config-save-btn.saved {
+    background: rgba(16, 185, 129, 0.2);
+    border-color: rgba(16, 185, 129, 0.4);
+    color: #6ee7b7;
+}
+
+.config-save-btn.err {
+    background: rgba(239, 68, 68, 0.15);
+    border-color: rgba(239, 68, 68, 0.4);
+    color: #f87171;
+}
+
+.config-cancel-btn {
+    padding: 9px 18px;
+    border-radius: 9px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: transparent;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+
+.config-cancel-btn:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.config-error-msg {
+    font-size: 0.82rem;
+    color: #f87171;
+}
+
+/* Sidebar */
+.config-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    position: sticky;
+    top: 20px;
+}
+
+.config-info-box {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 12px;
+    padding: 18px;
+}
+
+.config-info-warn {
+    border-color: rgba(251, 191, 36, 0.25);
+    background: rgba(251, 191, 36, 0.06);
+}
+
+.config-info-title {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0 0 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.config-info-warn .config-info-title {
+    color: #fbbf24;
+}
+
+.config-info-body {
+    font-size: 0.82rem;
+    line-height: 1.65;
+    color: rgba(255, 255, 255, 0.42);
+    margin: 0;
+}
+
+.config-info-body strong {
+    color: rgba(255, 255, 255, 0.7);
+}
