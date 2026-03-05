@@ -113,7 +113,26 @@
   color: rgba(255, 255, 255, 1);
   border: none;
   border-radius: 18px;
-  flex: 1 1 10px;
+  flex: 1 1 50px;
+}
+
+.signup-btn:hover {
+  background-color: #4a7531;
+}
+
+.signup-error-text {
+  color: #ff6b6b;
+  font-size: 0.9rem;
+  margin-top: -5px;
+  width: 100%;
+}
+
+.signup-success-text {
+  color: #4caf50;
+  font-size: 0.9rem;
+  margin-top: 10px;
+  flex-basis: 100%;
+  width: 100%;
 }
 
 @media (max-width: 600px) {

@@ -1,14 +1,18 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useLocation, Link } from "react-router-dom"; // 1. Added Link
 import "./Navbar.css";
 import logo from "../assets/logo.png";
 import profileIcon from "../assets/icon_profile.svg";
+import { AuthContext } from "../contexts/authContext";
 
 export default function Navbar() {
+  const { user, logout } = useContext(AuthContext);
   const location = useLocation();
 
   const isLoginPage = location.pathname === "/login";
   const isSignUpPage = location.pathname === "/register";
+
+  const profilePath = user ? "/profile" : "/login";
 
   return (
     <header className="main-header">
@@ -19,7 +23,9 @@ export default function Navbar() {
         </Link>
 
         <nav className="navigation">
-          <Link to="/#" onClick={() => window.scrollTo(0, 0)}>Home</Link>
+          <Link to="/#" onClick={() => window.scrollTo(0, 0)}>
+            Home
+          </Link>
 
           {!isLoginPage && !isSignUpPage && (
             <>
@@ -32,10 +38,11 @@ export default function Navbar() {
           <div className="auth-group">
             <div className="line"></div>
             <div className="profile-btn">
-              <Link to="/login">
-                <img src={profileIcon} alt="Login" />
+              {/* Change link and label based on authentication (login) status */}
+              <Link to={profilePath}>
+                <img src={profileIcon} alt={user ? "Profile" : "Login"} />
               </Link>
-              <Link to="/login">Login</Link>
+              <Link to={profilePath}>{user ? user.username : "Login"}</Link>
             </div>
           </div>
         </nav>

@@ -13,6 +13,7 @@ import Navbar from "./components/Navbar";
 import SignupPage from "./pages/SignupPage";
 import PaymentPage from "./pages/PaymentPage";
 
+import Profile from "./pages/Profile";
 
 function App() {
   return (
@@ -28,6 +29,9 @@ function App() {
         <Route path="/register" element={<SignupPage />} />
 
         <Route path="/payment" element={<PaymentPage />} />
+        <Route path="/profile" element={<Profile />} />
+
+        {/* Placeholder for the Dashboard we will build next */}
         <Route
           path="/dashboard"
           element={

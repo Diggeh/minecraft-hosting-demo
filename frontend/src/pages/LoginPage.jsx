@@ -1,31 +1,54 @@
 import React, { useState, useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../contexts/authContext";
 import api from "../services/api";
 import iconMail from "../assets/icon_mail.svg";
 import iconKey from "../assets/icon_key.svg";
 import iconEyeClosed from "../assets/icon_eye_closed.svg";
-import "../styles/LoginPage.css"; 
-
+import iconEyeOpen from "../assets/icon_eye_open.svg";
+import "../styles/LoginPage.css";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const { login } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const validateEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
   const handleLogin = async (e) => {
-    e.preventDefault(); 
-    setError(""); 
+    e.preventDefault();
+    setError("");
 
+    if (email.trim() === "" || password.trim() === "") {
+      setError("Please fill out all required fields.");
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+
+    setLoading(true);
     try {
-      const response = await api.post("/users/login", { email, password });
+      const response = await api.post("/auth/login", { email, password });
 
       login(response.data, response.data.token);
 
-      window.location.href = "/dashboard";
+      navigate("/dashboard");
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to login. Try again.");
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          "Server is currently unavailable. Please try again.",
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -46,32 +69,43 @@ const LoginPage = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                autoComplete="email"
               />
             </div>
 
             <div className="input-wrapper">
               <img src={iconKey} />
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                autoComplete="current-password"
               />
-              <img src={iconEyeClosed} />
+              <button
+                type="button"
+                onClick={() => setShowPassword((s) => !s)}
+                className="input-wrapper-button"
+              >
+                <img
+                  src={showPassword ? iconEyeOpen : iconEyeClosed}
+                  alt={showPassword ? "Hide password" : "Show password"}
+                />
+              </button>
             </div>
 
-            <button type="submit" className="btn-login">
-              Login
+            <button type="submit" className="btn-login" disabled={loading}>
+              {loading ? "Logging in..." : "Login"}
             </button>
           </div>
 
           {error && <p className="error-text">{error}</p>}
 
           <div className="form-links">
-            <a href="#" className="cyan-link">
+            <Link to="#" className="cyan-link">
               Forgot password?
-            </a>
+            </Link>
           </div>
 
           <button type="button" className="btn-google">
@@ -84,10 +118,10 @@ const LoginPage = () => {
           </button>
 
           <p className="signup-text">
-            Dont have an account?{" "}
-            <a href="/register" className="cyan-link">
+            Don't have an account?{" "}
+            <Link to="/register" className="cyan-link">
               Sign up here
-            </a>
+            </Link>
           </p>
         </form>
       </div>
