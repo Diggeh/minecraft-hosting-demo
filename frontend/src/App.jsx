@@ -11,6 +11,7 @@ import LoginPage from "./pages/LoginPage";
 import LandingPage from "./pages/LandingPage";
 import Navbar from "./components/Navbar";
 import SignupPage from "./pages/SignupPage";
+import Profile from "./pages/Profile";
 
 function App() {
   return (
@@ -24,6 +25,8 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
 
         <Route path="/register" element={<SignupPage />} />
+
+        <Route path="/profile" element={<Profile />} />
 
         {/* Placeholder for the Dashboard we will build next */}
         <Route
