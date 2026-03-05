@@ -2,6 +2,8 @@
 node_modules/
 /backend/node_modules
 /frontend/node_modules
+/backend/crafty_stats.json
+/backend/crafty_stats_list.json
 
 # Environment variables
 .env
