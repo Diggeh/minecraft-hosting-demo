@@ -21,5 +21,11 @@ api.interceptors.request.use(
     return Promise.reject(error);
   },
 );
+// Function to fetch the logged-in user's Minecraft servers
+export const getUserServers = async () => {
+  // This will hit http://localhost:5000/api/servers
+  const response = await api.get("/servers");
+  return response.data;
+};
 
 export default api;

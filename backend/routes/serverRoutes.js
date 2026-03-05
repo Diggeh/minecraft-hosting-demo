@@ -1,3 +1,4 @@
+const { protect } = require("../middleware/authMiddleware");
 const express = require("express");
 const axios = require("axios");
 const fs = require("fs").promises; // Node's built-in file system module
@@ -144,9 +145,10 @@ router.post("/:id/stop", async (req, res) => {
 // ==========================================
 // ROUTE 4: View All Servers (Bypass Compass)
 // ==========================================
-router.get("/", async (req, res) => {
+router.get("/", protect, async (req, res) => {
   try {
-    const servers = await Server.find();
+    // Modify this line to only find servers where the owner matches the logged-in user's ID
+    const servers = await Server.find({ owner: req.user.id });
     res.status(200).json(servers);
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch servers from database" });

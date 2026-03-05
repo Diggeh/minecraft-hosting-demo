@@ -1,11 +1,11 @@
 import React, { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom"; // 1. Import useNavigate
 import { AuthContext } from "../contexts/authContext";
 import api from "../services/api";
 import iconMail from "../assets/icon_mail.svg";
 import iconKey from "../assets/icon_key.svg";
 import iconEyeClosed from "../assets/icon_eye_closed.svg";
-import "../styles/LoginPage.css"; 
-
+import "../styles/LoginPage.css";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -13,17 +13,19 @@ const LoginPage = () => {
   const [error, setError] = useState("");
 
   const { login } = useContext(AuthContext);
+  const navigate = useNavigate(); // 2. Initialize the hook
 
   const handleLogin = async (e) => {
-    e.preventDefault(); 
-    setError(""); 
+    e.preventDefault();
+    setError("");
 
     try {
-      const response = await api.post("/users/login", { email, password });
+      const response = await api.post("/auth/login", { email, password });
 
       login(response.data, response.data.token);
 
-      window.location.href = "/dashboard";
+      // 3. Smoothly navigate to the servers page without reloading the browser
+      navigate("/servers");
     } catch (err) {
       setError(err.response?.data?.message || "Failed to login. Try again.");
     }
