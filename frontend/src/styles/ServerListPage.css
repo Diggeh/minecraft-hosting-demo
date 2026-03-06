@@ -27,28 +27,45 @@
   margin: 0;
   line-height: 1;
   letter-spacing: -1px;
+  font-weight: 500;
 }
 
 .header-titles .subtitle {
   font-size: 1.1rem;
   color: #ffffff;
   margin: 0.5rem 0 0 0;
+  letter-spacing: 0.8px;
   opacity: 0.9;
+  font-weight: 10;
 }
 
 .create-server-btn {
   background-color: #366417 !important;
   color: #ffffff !important;
-  padding: 0.8rem 1.8rem !important;
+  padding: 0.8rem 2rem !important;
   border-radius: 50px !important;
   font-family: "Kdam Thmor Pro", sans-serif !important;
   font-size: 1.5rem !important;
   display: flex !important;
   align-items: center !important;
-  gap: 1rem !important;
+  gap: 1px !important;
   border: none !important;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
   box-shadow: 0 4px 15px rgba(54, 100, 23, 0.3);
+  font-weight: 500;
+  letter-spacing: 0.8px;
+}
+
+.create-server-btn img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 45px;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  box-shadow: none;
 }
 
 .create-server-btn:hover {
@@ -129,6 +146,7 @@
 .server-text-details h2 {
   font-family: "Kdam Thmor Pro", sans-serif;
   font-size: 1.5rem;
+  font-weight: 500;
   margin: 0;
   color: #ffffff;
 }
@@ -159,7 +177,7 @@
 }
 
 .status-label-text.online {
-  color: #4CAF50;
+  color: #4caf50;
 }
 
 .uptime-numbers {
@@ -203,15 +221,22 @@
 }
 
 .icon-action-btn .action-icon-img {
-  width: 16px;
-  height: 16px;
+  width: 29px;
+  height: 29px;
+  opacity: 0.8;
+  filter: brightness(0) invert(1);
+}
+
+.icon-action-btn .action-icon-img.restart {
+  width: 23;
+  height: 23px;
   opacity: 0.8;
   filter: brightness(0) invert(1);
 }
 
 .server-main-icon-svg {
-  width: 24px;
-  height: 24px;
+  width: 35px;
+  height: 35px;
   filter: brightness(0) invert(1);
 }
 

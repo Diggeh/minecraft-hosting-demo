@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { getServerById, startServer, stopServer, restartServer, getServerStatus, getServerLogs, sendServerCommand } from "../services/api";
+import {
+  getServerById,
+  startServer,
+  stopServer,
+  restartServer,
+  getServerStatus,
+  getServerLogs,
+  sendServerCommand,
+} from "../services/api";
 import ServerFileBrowser from "../components/ServerFileBrowser";
 import ServerConfig from "../components/ServerConfig";
 import "../styles/ServerDashboardPage.css";
@@ -10,314 +18,410 @@ import consoleIcon from "../assets/Console_icon.svg";
 import filesIcon from "../assets/Files_icon.svg";
 import settingsIcon from "../assets/Settings_icon.svg";
 import serverIconLarge from "../assets/Server_icon.svg";
+import restartIcon from "../assets/icon-restart-blue.svg";
 
 const ServerDashboardPage = () => {
-    const { id } = useParams();
-    const [server, setServer] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
-    const [activeTab, setActiveTab] = useState("dashboard");
-    const [logs, setLogs] = useState([]);
-    const [command, setCommand] = useState("");
-    const [liveStats, setLiveStats] = useState(null);
-    const consoleEndRef = React.useRef(null);
+  const { id } = useParams();
+  const [server, setServer] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [activeTab, setActiveTab] = useState("dashboard");
+  const [logs, setLogs] = useState([]);
+  const [command, setCommand] = useState("");
+  const [liveStats, setLiveStats] = useState(null);
+  const consoleEndRef = React.useRef(null);
 
-    const scrollToBottom = () => {
-        consoleEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  const scrollToBottom = () => {
+    consoleEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const formatMemory = (bytes) => {
+    if (!bytes || bytes === 0) return "0 MB";
+    const mb = bytes / (1024 * 1024);
+    if (mb < 1024) return `${mb.toFixed(1)} MB`;
+    return `${(mb / 1024).toFixed(1)} GB`;
+  };
+
+  useEffect(() => {
+    if (activeTab === "console") {
+      scrollToBottom();
+    }
+  }, [logs, activeTab]);
+
+  // Clear console logs whenever the server stops
+  useEffect(() => {
+    if (server?.status === "stopped") {
+      setLogs([]);
+    }
+  }, [server?.status]);
+
+  const handleCommandSubmit = async (e) => {
+    if (e.key === "Enter" && command.trim()) {
+      const cmd = command.trim();
+      setCommand("");
+      setLogs((prev) => [...prev, `> ${cmd}`]);
+
+      try {
+        await sendServerCommand(id, cmd);
+      } catch (err) {
+        setLogs((prev) => [
+          ...prev,
+          `[System Error]: Failed to send command: ${err.message}`,
+        ]);
+      }
+    }
+  };
+
+  useEffect(() => {
+    const fetchServer = async () => {
+      try {
+        const data = await getServerById(id);
+        setServer(data);
+      } catch (err) {
+        setError("Failed to load server details.");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    const formatMemory = (bytes) => {
-        if (!bytes || bytes === 0) return "0 MB";
-        const mb = bytes / (1024 * 1024);
-        if (mb < 1024) return `${mb.toFixed(1)} MB`;
-        return `${(mb / 1024).toFixed(1)} GB`;
+    const pollStatus = async () => {
+      try {
+        const data = await getServerStatus(id);
+        const liveStatus =
+          data.server_status?.toLowerCase() ||
+          data.status?.toLowerCase() ||
+          "stopped";
+
+        setLiveStats(data);
+
+        setServer((prev) => {
+          if (!prev) return prev;
+          const normalizedStatus =
+            liveStatus === "online" ? "running" : liveStatus;
+
+          if (prev.status !== normalizedStatus) {
+            console.log(
+              `📡 Dashboard Sync: ${prev.status} -> ${normalizedStatus}`,
+            );
+            return { ...prev, status: normalizedStatus };
+          }
+          return prev;
+        });
+      } catch (err) {
+        console.warn("Polling status failed", err);
+      }
     };
 
-    useEffect(() => {
-        if (activeTab === "console") {
-            scrollToBottom();
-        }
-    }, [logs, activeTab]);
-
-    // Clear console logs whenever the server stops
-    useEffect(() => {
-        if (server?.status === 'stopped') {
-            setLogs([]);
-        }
-    }, [server?.status]);
-
-    const handleCommandSubmit = async (e) => {
-        if (e.key === 'Enter' && command.trim()) {
-            const cmd = command.trim();
-            setCommand("");
-            setLogs(prev => [...prev, `> ${cmd}`]);
-
-            try {
-                await sendServerCommand(id, cmd);
-            } catch (err) {
-                setLogs(prev => [...prev, `[System Error]: Failed to send command: ${err.message}`]);
-            }
-        }
+    const fetchLogs = async () => {
+      if (activeTab !== "console") return;
+      if (server?.status === "stopped") return;
+      try {
+        const data = await getServerLogs(id);
+        setLogs(data || []);
+      } catch (err) {
+        console.warn("Failed to fetch logs", err);
+      }
     };
 
-    useEffect(() => {
-        const fetchServer = async () => {
-            try {
-                const data = await getServerById(id);
-                setServer(data);
-            } catch (err) {
-                setError("Failed to load server details.");
-                console.error(err);
-            } finally {
-                setLoading(false);
-            }
-        };
+    fetchServer();
 
-        const pollStatus = async () => {
-            try {
-                const data = await getServerStatus(id);
-                const liveStatus = data.server_status?.toLowerCase() ||
-                    data.status?.toLowerCase() ||
-                    'stopped';
+    const statusInterval = setInterval(pollStatus, 5000);
 
-                setLiveStats(data);
+    let logsInterval;
+    if (activeTab === "console") {
+      fetchLogs();
+      logsInterval = setInterval(fetchLogs, 3000);
+    }
 
-                setServer(prev => {
-                    if (!prev) return prev;
-                    const normalizedStatus = liveStatus === 'online' ? 'running' : liveStatus;
-
-                    if (prev.status !== normalizedStatus) {
-                        console.log(`📡 Dashboard Sync: ${prev.status} -> ${normalizedStatus}`);
-                        return { ...prev, status: normalizedStatus };
-                    }
-                    return prev;
-                });
-            } catch (err) {
-                console.warn("Polling status failed", err);
-            }
-        };
-
-        const fetchLogs = async () => {
-            if (activeTab !== "console") return;
-            if (server?.status === 'stopped') return;
-            try {
-                const data = await getServerLogs(id);
-                setLogs(data || []);
-            } catch (err) {
-                console.warn("Failed to fetch logs", err);
-            }
-        };
-
-        fetchServer();
-
-        const statusInterval = setInterval(pollStatus, 5000);
-
-        let logsInterval;
-        if (activeTab === "console") {
-            fetchLogs();
-            logsInterval = setInterval(fetchLogs, 3000);
-        }
-
-        return () => {
-            clearInterval(statusInterval);
-            if (logsInterval) clearInterval(logsInterval);
-        };
-    }, [id, activeTab]);
-
-    const toggleServer = async () => {
-        if (!server) return;
-        try {
-            if (server.status === "running") {
-                await stopServer(server._id);
-                setServer({ ...server, status: "stopped" });
-            } else {
-                await startServer(server._id);
-                setServer({ ...server, status: "starting" });
-            }
-        } catch (err) {
-            console.error("Failed to toggle server status", err);
-        }
+    return () => {
+      clearInterval(statusInterval);
+      if (logsInterval) clearInterval(logsInterval);
     };
+  }, [id, activeTab]);
 
-    const handleStop = async () => {
-        if (!server || server.status !== "running") return;
-        try {
-            await stopServer(server._id);
-            setServer({ ...server, status: "stopped" });
-        } catch (err) { console.error("Stop failed", err); }
-    };
+  const toggleServer = async () => {
+    if (!server) return;
+    try {
+      if (server.status === "running") {
+        await stopServer(server._id);
+        setServer({ ...server, status: "stopped" });
+      } else {
+        await startServer(server._id);
+        setServer({ ...server, status: "starting" });
+      }
+    } catch (err) {
+      console.error("Failed to toggle server status", err);
+    }
+  };
 
-    const handleRestart = async () => {
-        if (!server) return;
-        try {
-            await restartServer(server._id);
-            setServer({ ...server, status: "starting" });
-        } catch (err) { console.error("Restart failed", err); }
-    };
+  const handleStop = async () => {
+    if (!server || server.status !== "running") return;
+    try {
+      await stopServer(server._id);
+      setServer({ ...server, status: "stopped" });
+    } catch (err) {
+      console.error("Stop failed", err);
+    }
+  };
 
-    if (loading) return <div className="dashboard-status">Loading dashboard...</div>;
-    if (error) return <div className="dashboard-status error">{error}</div>;
-    if (!server) return <div className="dashboard-status">Server not found.</div>;
+  const handleRestart = async () => {
+    if (!server) return;
+    try {
+      await restartServer(server._id);
+      setServer({ ...server, status: "starting" });
+    } catch (err) {
+      console.error("Restart failed", err);
+    }
+  };
 
-    const tabs = [
-        { id: "dashboard", label: "Dashboard", icon: <img src={serverIconLarge} alt="Dashboard" className="tab-icon-img" /> },
-        { id: "console", label: "Console", icon: <img src={consoleIcon} alt="Console" className="tab-icon-img" /> },
-        { id: "files", label: "Files", icon: <img src={filesIcon} alt="Files" className="tab-icon-img" /> },
-        { id: "configuration", label: "Configuration", icon: <img src={settingsIcon} alt="Settings" className="tab-icon-img" /> },
-    ];
+  if (loading)
+    return <div className="dashboard-status">Loading dashboard...</div>;
+  if (error) return <div className="dashboard-status error">{error}</div>;
+  if (!server) return <div className="dashboard-status">Server not found.</div>;
 
-    return (
-        <div className="dashboard-container">
-            <main className="dashboard-content">
-                <Link to="/servers" className="back-link">
-                    Back to Servers
-                </Link>
+  const tabs = [
+    {
+      id: "dashboard",
+      label: "Dashboard",
+      icon: (
+        <img src={serverIconLarge} alt="Dashboard" className="tab-icon-img" />
+      ),
+    },
+    {
+      id: "console",
+      label: "Console",
+      icon: <img src={consoleIcon} alt="Console" className="tab-icon-img" />,
+    },
+    {
+      id: "files",
+      label: "Files",
+      icon: <img src={filesIcon} alt="Files" className="tab-icon-img" />,
+    },
+    {
+      id: "configuration",
+      label: "Configuration",
+      icon: <img src={settingsIcon} alt="Settings" className="tab-icon-img" />,
+    },
+  ];
 
-                <div className="dashboard-card">
-                    <header className="dashboard-header">
-                        <div className="server-info-section">
-                            <div className="server-icon-large">
-                                <img src={serverIconLarge} alt="Server" className="server-icon-large-svg" />
-                            </div>
-                            <div className="server-text-info">
-                                <h1>{server.serverName || "Server Name"}</h1>
-                                <p className="server-ip">Placeholder.Server.IP</p>
-                            </div>
-                        </div>
+  return (
+    <div className="dashboard-container">
+      <main className="dashboard-content">
+        <Link to="/servers" className="back-link">
+          Back to Servers
+        </Link>
 
-                        <div className="server-controls">
-                            <button
-                                className={`start-btn ${server.status === "running" ? "running" : ""} ${["starting", "stopping"].includes(server.status) ? "disabled" : ""}`}
-                                onClick={toggleServer}
-                                disabled={["starting", "stopping"].includes(server.status)}
-                            >
-                                <div className="start-icon-wrapper">
-                                    {server.status === "running" ?
-                                        <img src={stopIcon} alt="Stop" className="action-btn-icon-img" /> :
-                                        <img src={runIcon} alt="Start" className="action-btn-icon-img" />
-                                    }
-                                </div>
-                                <span>
-                                    {server.status === "starting" ? "Starting..." :
-                                        server.status === "stopping" ? "Stopping..." :
-                                            server.status === "running" ? "Stop" : "Start"}
-                                </span>
-                            </button>
-                            {server.status === "running" && (
-                                <button className="ctrl-btn restart-btn" onClick={handleRestart} title="Restart">
-                                    ↺ Restart
-                                </button>
-                            )}
-                        </div>
-                    </header>
+        <div className="dashboard-card">
+          <header className="dashboard-header">
+            <div className="server-info-section">
+              <div className="server-icon-large">
+                <img
+                  src={serverIconLarge}
+                  alt="Server"
+                  className="server-icon-large-svg"
+                />
+              </div>
+              <div className="server-text-info">
+                <h1>{server.serverName || "Server Name"}</h1>
+                <p className="server-ip">Placeholder.Server.IP</p>
+              </div>
+            </div>
 
-                    <nav className="dashboard-tabs">
-                        {tabs.map((tab) => (
-                            <button
-                                key={tab.id}
-                                className={`tab-item ${activeTab === tab.id ? "active" : ""}`}
-                                onClick={() => setActiveTab(tab.id)}
-                            >
-                                {tab.icon}
-                                <span>{tab.label}</span>
-                            </button>
-                        ))}
-                    </nav>
+            <div className="server-controls">
+              {server.status === "running" ? (
+                <button
+                  className="ctrl-btn stop-btn"
+                  onClick={toggleServer}
+                  disabled={server.status === "stopping"}
+                  title="Stop"
+                >
+                  <img
+                    src={stopIcon}
+                    alt="Stop"
+                    className="action-btn-icon-img stop-btn-icon-img"
+                  />
+                  Stop
+                </button>
+              ) : (
+                <button
+                  className={`start-btn ${["starting", "stopping"].includes(server.status) ? "disabled" : ""}`}
+                  onClick={toggleServer}
+                  disabled={["starting", "stopping"].includes(server.status)}
+                >
+                  <div className="start-icon-wrapper">
+                    <img
+                      src={runIcon}
+                      alt="Start"
+                      className="action-btn-icon-img"
+                    />
+                  </div>
+                  <span>
+                    {server.status === "starting"
+                      ? "Starting..."
+                      : server.status === "stopping"
+                        ? "Stopping..."
+                        : "Start"}
+                  </span>
+                </button>
+              )}
+              {server.status === "running" && (
+                <button
+                  className="ctrl-btn restart-btn"
+                  onClick={handleRestart}
+                  title="Restart"
+                >
+                  <img src={restartIcon} />
+                  Restart
+                </button>
+              )}
+            </div>
+          </header>
 
-                    <div className={`tab-pane ${activeTab === "files" ? "tab-files" : activeTab === "configuration" ? "tab-config" : ""}`}>
-                        {activeTab === "console" ? (
-                            <div className="console-container">
-                                <div className="console-logs">
-                                    {logs.length > 0 ? (
-                                        logs.map((log, index) => (
-                                            <div
-                                                key={index}
-                                                className="log-line"
-                                                dangerouslySetInnerHTML={{ __html: log }}
-                                            />
-                                        ))
-                                    ) : (
-                                        <div className="log-placeholder">
-                                            {server?.status === 'stopped' ? 'Server is offline. Start the server to see console logs.' : 'Fetching logs...'}
-                                        </div>
-                                    )}
-                                    <div ref={consoleEndRef} />
-                                </div>
-                                <div className="console-input-wrapper">
-                                    <span className="console-prompt">&gt;</span>
-                                    <input
-                                        type="text"
-                                        placeholder="Enter command..."
-                                        className="console-input"
-                                        value={command}
-                                        onChange={(e) => setCommand(e.target.value)}
-                                        onKeyDown={handleCommandSubmit}
-                                    />
-                                </div>
-                            </div>
-                        ) : activeTab === "files" ? (
-                            <ServerFileBrowser serverId={id} />
-                        ) : activeTab === "configuration" ? (
-                            <ServerConfig serverId={id} />
-                        ) : (
-                            <div className="stats-grid">
-                                <div className="stats-column">
-                                    <div className="stat-item">
-                                        <span className="stat-label">Server Status:</span>
-                                        <span className={`stat-value ${server.status === 'running' ? 'online' : 'offline'}`}>
-                                            {server.status === 'running' ? 'Online' : server.status.charAt(0).toUpperCase() + server.status.slice(1)}
-                                        </span>
-                                    </div>
-                                    <div className="stat-item">
-                                        <span className="stat-label">Server Started:</span>
-                                        <span className="stat-value">{liveStats?.started && liveStats.started !== "False" && !isNaN(new Date(liveStats.started).getTime()) ? new Date(liveStats.started).toLocaleString() : 'Offline'}</span>
-                                    </div>
-                                    <div className="stat-item">
-                                        <span className="stat-label">Server Uptime:</span>
-                                        <span className="stat-value">{server.status === 'running' ? (server.uptime || 'Loading...') : 'Offline'}</span>
-                                    </div>
-                                    <div className="stat-item">
-                                        <span className="stat-label">Server Time Zone:</span>
-                                        <span className="stat-value">{Intl.DateTimeFormat().resolvedOptions().timeZone}</span>
-                                    </div>
-                                </div>
+          <nav className="dashboard-tabs">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                className={`tab-item ${activeTab === tab.id ? "active" : ""}`}
+                onClick={() => setActiveTab(tab.id)}
+              >
+                {tab.icon}
+                <span>{tab.label}</span>
+              </button>
+            ))}
+          </nav>
 
-                                <div className="stats-column">
-                                    <div className="stat-item">
-                                        <span className="stat-label">CPU Usage:</span>
-                                        <span className="stat-value">{liveStats?.cpu?.toFixed(1) || '0.0'}%</span>
-                                    </div>
-                                    <div className="stat-item">
-                                        <span className="stat-label">Memory Usage:</span>
-                                        <span className="stat-value">{formatMemory(liveStats?.mem || 0)}</span>
-                                    </div>
-                                    <div className="stat-item">
-                                        <span className="stat-label">Players:</span>
-                                        <span className="stat-value">{liveStats?.online || 0} / {liveStats?.max || 0}</span>
-                                    </div>
-                                </div>
-
-                                <div className="stats-column">
-                                    <div className="stat-item">
-                                        <span className="stat-label">Version:</span>
-                                        <span className="stat-value">{liveStats?.version && liveStats.version !== "False" ? liveStats.version : 'Unknown'}</span>
-                                    </div>
-                                    <div className="stat-item">
-                                        <span className="stat-label">Description:</span>
-                                        <span className="stat-value">{liveStats?.desc && liveStats.desc !== "False" ? liveStats.desc : 'No description'}</span>
-                                    </div>
-                                    <div className="stat-item">
-                                        <span className="stat-label">Server Type:</span>
-                                        <span className="stat-value highlight">{liveStats?.server_id?.type || 'minecraft-java'}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
+          <div
+            className={`tab-pane ${activeTab === "files" ? "tab-files" : activeTab === "configuration" ? "tab-config" : ""}`}
+          >
+            {activeTab === "console" ? (
+              <div className="console-container">
+                <div className="console-logs">
+                  {logs.length > 0 ? (
+                    logs.map((log, index) => (
+                      <div
+                        key={index}
+                        className="log-line"
+                        dangerouslySetInnerHTML={{ __html: log }}
+                      />
+                    ))
+                  ) : (
+                    <div className="log-placeholder">
+                      {server?.status === "stopped"
+                        ? "Server is offline. Start the server to see console logs."
+                        : "Fetching logs..."}
                     </div>
+                  )}
+                  <div ref={consoleEndRef} />
                 </div>
-            </main>
+                <div className="console-input-wrapper">
+                  <span className="console-prompt">&gt;</span>
+                  <input
+                    type="text"
+                    placeholder="Enter command..."
+                    className="console-input"
+                    value={command}
+                    onChange={(e) => setCommand(e.target.value)}
+                    onKeyDown={handleCommandSubmit}
+                  />
+                </div>
+              </div>
+            ) : activeTab === "files" ? (
+              <ServerFileBrowser serverId={id} />
+            ) : activeTab === "configuration" ? (
+              <ServerConfig serverId={id} />
+            ) : (
+              <div className="stats-grid">
+                <div className="stats-column">
+                  <div className="stat-item">
+                    <span className="stat-label">Server Status:</span>
+                    <span
+                      className={`stat-value ${server.status === "running" ? "online" : "offline"}`}
+                    >
+                      {server.status === "running"
+                        ? "Online"
+                        : server.status.charAt(0).toUpperCase() +
+                          server.status.slice(1)}
+                    </span>
+                  </div>
+                  <div className="stat-item">
+                    <span className="stat-label">Server Started:</span>
+                    <span className="stat-value">
+                      {liveStats?.started &&
+                      liveStats.started !== "False" &&
+                      !isNaN(new Date(liveStats.started).getTime())
+                        ? new Date(liveStats.started).toLocaleString()
+                        : "Offline"}
+                    </span>
+                  </div>
+                  <div className="stat-item">
+                    <span className="stat-label">Server Uptime:</span>
+                    <span className="stat-value">
+                      {server.status === "running"
+                        ? server.uptime || "Loading..."
+                        : "Offline"}
+                    </span>
+                  </div>
+                  <div className="stat-item">
+                    <span className="stat-label">Server Time Zone:</span>
+                    <span className="stat-value">
+                      {Intl.DateTimeFormat().resolvedOptions().timeZone}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="stats-column">
+                  <div className="stat-item">
+                    <span className="stat-label">CPU Usage:</span>
+                    <span className="stat-value">
+                      {liveStats?.cpu?.toFixed(1) || "0.0"}%
+                    </span>
+                  </div>
+                  <div className="stat-item">
+                    <span className="stat-label">Memory Usage:</span>
+                    <span className="stat-value">
+                      {formatMemory(liveStats?.mem || 0)}
+                    </span>
+                  </div>
+                  <div className="stat-item">
+                    <span className="stat-label">Players:</span>
+                    <span className="stat-value">
+                      {liveStats?.online || 0} / {liveStats?.max || 0}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="stats-column">
+                  <div className="stat-item">
+                    <span className="stat-label">Version:</span>
+                    <span className="stat-value">
+                      {liveStats?.version && liveStats.version !== "False"
+                        ? liveStats.version
+                        : "Unknown"}
+                    </span>
+                  </div>
+                  <div className="stat-item">
+                    <span className="stat-label">Description:</span>
+                    <span className="stat-value">
+                      {liveStats?.desc && liveStats.desc !== "False"
+                        ? liveStats.desc
+                        : "No description"}
+                    </span>
+                  </div>
+                  <div className="stat-item">
+                    <span className="stat-label">Server Type:</span>
+                    <span className="stat-value highlight">
+                      {liveStats?.server_id?.type || "minecraft-java"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
-    );
+      </main>
+    </div>
+  );
 };
 
 export default ServerDashboardPage;

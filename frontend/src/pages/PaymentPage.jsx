@@ -18,7 +18,7 @@ const PaymentPage = () => {
   const [loading, setLoading] = useState(true);
   const [localIp, setLocalIp] = useState("");
 
-  const API_BASE = "http://localhost:5000/api";
+  const API_BASE = `${import.meta.env.VITE_URL}/api`;
 
   useEffect(() => {
     const initPage = async () => {
@@ -35,7 +35,9 @@ const PaymentPage = () => {
           const ipRes = await axios.get(`${API_BASE}/status/ip`);
           setLocalIp(ipRes.data.ip);
         } catch (ipErr) {
-          console.warn("Could not discover local IP, falling back to localhost");
+          console.warn(
+            "Could not discover local IP, falling back to localhost",
+          );
           setLocalIp("localhost");
         }
       } catch (err) {
@@ -52,7 +54,9 @@ const PaymentPage = () => {
 
     const interval = setInterval(async () => {
       try {
-        const res = await axios.get(`${API_BASE}/payments/${payment._id}/status`);
+        const res = await axios.get(
+          `${API_BASE}/payments/${payment._id}/status`,
+        );
         if (res.data.status === "completed") {
           setStatus("completed");
           clearInterval(interval);
@@ -66,7 +70,8 @@ const PaymentPage = () => {
     return () => clearInterval(interval);
   }, [payment, status, navigate]);
 
-  if (loading) return <div className="payment-page">Loading payment session...</div>;
+  if (loading)
+    return <div className="payment-page">Loading payment session...</div>;
 
   const scanLink = `http://${localIp || "localhost"}:5000/api/payments/scan/demo`;
 
@@ -74,7 +79,11 @@ const PaymentPage = () => {
     <div className="payment-page">
       <div className="payment-container">
         <div className="payment-header">
-          <h1>{status === "completed" ? "Payment Successful!" : "Complete Your Purchase"}</h1>
+          <h1>
+            {status === "completed"
+              ? "Payment Successful!"
+              : "Complete Your Purchase"}
+          </h1>
           <p>
             {status === "completed"
               ? "We've confirmed your payment. Preparing your server..."
@@ -85,7 +94,15 @@ const PaymentPage = () => {
         <div className="qr-section">
           <div className="qr-wrapper">
             {status === "completed" ? (
-              <div className="success-icon" style={{ fontSize: "100px", textAlign: "center", display: "block", color: "#4caf50" }}>
+              <div
+                className="success-icon"
+                style={{
+                  fontSize: "100px",
+                  textAlign: "center",
+                  display: "block",
+                  color: "#4caf50",
+                }}
+              >
                 ✅
               </div>
             ) : (
@@ -120,7 +137,7 @@ const PaymentPage = () => {
         </div>
 
         <div className="payment-footer">
-          <button className="cancel-btn" onClick={() => navigate("/")}>
+          <button className="cancel-btn" onClick={() => navigate("/servers")}>
             Cancel Payment
           </button>
         </div>
@@ -135,7 +152,8 @@ const PaymentPage = () => {
               <li>Confirm the payment in your app.</li>
             </ol>
             <p className="note">
-              Keep this page open. Your account will be upgraded automatically once payment is confirmed.
+              Keep this page open. Your account will be upgraded automatically
+              once payment is confirmed.
             </p>
           </div>
         )}
