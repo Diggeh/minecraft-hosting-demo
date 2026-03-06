@@ -1,0 +1,88 @@
+@import url("https://fonts.googleapis.com/css2?family=Mina:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Kdam+Thmor+Pro&display=swap");
+
+.sidebar {
+  width: 280px;
+  height: 100%;
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #222;
+  background-color: #0e0e0e;
+  align-items: center;
+}
+
+.user-section {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+.profile-avatar img {
+  height: 150px;
+  width: 150px;
+}
+
+.username {
+  font-family: "Kdam Thmor Pro", sans-serif; 
+  color: white;
+}
+
+.email {
+  font-family: "Mina", sans-serif;
+}
+
+.logout-btn {
+  width: 70%;
+  background-color: #0e0e0e;
+  border-radius: 20px;
+}
+
+.logout-link {
+  text-decoration: none;
+  color: white;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  margin-top: 30px;
+}
+
+.nav-group-label {
+  font-family: "Kdam Thmor Pro", sans-serif; 
+  font-size: 0.7rem;
+  color: #5B5B5B;
+  margin-bottom: 5px;
+}
+
+.sidebar-nav p {
+  align-items: start;
+}
+
+.nav-item {
+  display: flex;
+  gap: 8px;
+  border-radius: 10px;
+  padding: 5px 15px;
+  align-items: center;
+}
+
+.nav-item:hover {
+  background-color: #5d5c5c;
+}
+
+.nav-item-icon {
+}
+
+.nav-item h3 {
+  margin-top: 3px;
+  font-family: "Mina", sans-serif;
+  font-size: 0.8rem;
+  color: white;
+}
+
+
+
+
+
