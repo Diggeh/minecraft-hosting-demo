@@ -60,7 +60,7 @@ const PaymentPage = () => {
         if (res.data.status === "completed") {
           setStatus("completed");
           clearInterval(interval);
-          setTimeout(() => navigate("/dashboard"), 3000);
+          setTimeout(() => navigate("/servers"), 3000);
         }
       } catch (err) {
         console.error("Error polling payment status", err);

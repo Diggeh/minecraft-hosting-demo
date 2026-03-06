@@ -19,7 +19,9 @@ const craftyApi = axios.create({
 // ==========================================
 router.get("/debug/stats/:craftyId", async (req, res) => {
   try {
-    const craftyResponse = await craftyApi.get(`/servers/${req.params.craftyId}/stats`);
+    const craftyResponse = await craftyApi.get(
+      `/servers/${req.params.craftyId}/stats`,
+    );
     res.json(craftyResponse.data.data);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -166,58 +168,75 @@ router.get("/", protect, async (req, res) => {
 
     // 2. Fallback: If the user has no servers, show ALL servers (demo fallback)
     if (servers.length === 0) {
-      console.log("ℹ️ No servers found for user, showing all servers as fallback...");
+      console.log(
+        "ℹ️ No servers found for user, showing all servers as fallback...",
+      );
       servers = await Server.find({});
       console.log(`Found ${servers.length} total servers.`);
     }
 
     // 3. SYNC STATUS for all found servers in parallel for the list page
-    const serversWithUptime = await Promise.all(servers.map(async (serverDoc) => {
-      const server = serverDoc.toObject(); // Convert mongoose doc to plain object so we can add temp fields
-      try {
-        if (server.crafty_server_id && server.crafty_server_id !== "TEMP_ID") {
-          const craftyResponse = await craftyApi.get(`/servers/${server.crafty_server_id}/stats`);
-          const craftyData = craftyResponse.data.data;
-          require('fs').writeFileSync('crafty_stats_list.json', JSON.stringify(craftyData, null, 2));
+    const serversWithUptime = await Promise.all(
+      servers.map(async (serverDoc) => {
+        const server = serverDoc.toObject(); // Convert mongoose doc to plain object so we can add temp fields
+        try {
+          if (
+            server.crafty_server_id &&
+            server.crafty_server_id !== "TEMP_ID"
+          ) {
+            const craftyResponse = await craftyApi.get(
+              `/servers/${server.crafty_server_id}/stats`,
+            );
+            const craftyData = craftyResponse.data.data;
+            require("fs").writeFileSync(
+              "crafty_stats_list.json",
+              JSON.stringify(craftyData, null, 2),
+            );
 
-          let liveStatus = 'stopped';
-          if (craftyData.server_status) {
-            liveStatus = craftyData.server_status.toLowerCase();
-          } else if (craftyData.status) {
-            liveStatus = craftyData.status.toLowerCase();
-          } else if (craftyData.running === true) {
-            liveStatus = 'running';
+            let liveStatus = "stopped";
+            if (craftyData.server_status) {
+              liveStatus = craftyData.server_status.toLowerCase();
+            } else if (craftyData.status) {
+              liveStatus = craftyData.status.toLowerCase();
+            } else if (craftyData.running === true) {
+              liveStatus = "running";
+            }
+
+            if (liveStatus === "online") liveStatus = "running";
+            if (liveStatus === "offline") liveStatus = "stopped";
+
+            // Attach the start time for the frontend timer
+            if (liveStatus === "running" && craftyData.started) {
+              server.startedAt = craftyData.started; // e.g., "2026-03-05 17:42:28"
+            }
+
+            if (serverDoc.status !== liveStatus) {
+              serverDoc.status = liveStatus;
+              server.status = liveStatus; // update the plain object too
+              await serverDoc.save();
+            }
           }
-
-          if (liveStatus === 'online') liveStatus = 'running';
-          if (liveStatus === 'offline') liveStatus = 'stopped';
-
-          // Attach the start time for the frontend timer
-          if (liveStatus === 'running' && craftyData.started) {
-            server.startedAt = craftyData.started; // e.g., "2026-03-05 17:42:28"
-          }
-
-          if (serverDoc.status !== liveStatus) {
-            serverDoc.status = liveStatus;
-            server.status = liveStatus; // update the plain object too
-            await serverDoc.save();
+        } catch (err) {
+          console.warn(`⚠️ Failed to sync status for ${server.serverName}`);
+          // If Crafty returns a 404 or 400 (which Crafty uses for invalid/missing IDs),
+          // the server was deleted from Crafty. Clean up our database to remove the "zombie" server.
+          if (
+            err.response &&
+            (err.response.status === 404 || err.response.status === 400)
+          ) {
+            console.log(
+              `🗑️ Auto-cleaning deleted remote server from DB: ${server.serverName}`,
+            );
+            await Server.findByIdAndDelete(serverDoc._id);
+            return null; // Don't return this server in the final list
           }
         }
-      } catch (err) {
-        console.warn(`⚠️ Failed to sync status for ${server.serverName}`);
-        // If Crafty returns a 404 or 400 (which Crafty uses for invalid/missing IDs), 
-        // the server was deleted from Crafty. Clean up our database to remove the "zombie" server.
-        if (err.response && (err.response.status === 404 || err.response.status === 400)) {
-          console.log(`🗑️ Auto-cleaning deleted remote server from DB: ${server.serverName}`);
-          await Server.findByIdAndDelete(serverDoc._id);
-          return null; // Don't return this server in the final list
-        }
-      }
-      return server;
-    }));
+        return server;
+      }),
+    );
 
     // Filter out any servers that were just deleted
-    const validServers = serversWithUptime.filter(s => s !== null);
+    const validServers = serversWithUptime.filter((s) => s !== null);
 
     res.status(200).json(validServers);
   } catch (error) {
@@ -241,41 +260,57 @@ router.get("/:id", protect, async (req, res) => {
     // SYNC STATUS: Fetch live status from Crafty to ensure DB is up to date
     try {
       if (server.crafty_server_id && server.crafty_server_id !== "TEMP_ID") {
-        const craftyResponse = await craftyApi.get(`/servers/${server.crafty_server_id}/stats`);
+        const craftyResponse = await craftyApi.get(
+          `/servers/${server.crafty_server_id}/stats`,
+        );
         const craftyData = craftyResponse.data.data;
-        require('fs').writeFileSync('crafty_stats.json', JSON.stringify(craftyData, null, 2));
+        require("fs").writeFileSync(
+          "crafty_stats.json",
+          JSON.stringify(craftyData, null, 2),
+        );
 
-        let liveStatus = 'stopped';
+        let liveStatus = "stopped";
         if (craftyData.server_status) {
           liveStatus = craftyData.server_status.toLowerCase();
         } else if (craftyData.status) {
           liveStatus = craftyData.status.toLowerCase();
         } else if (craftyData.running === true) {
-          liveStatus = 'running';
+          liveStatus = "running";
         }
 
         // Map Crafty states to our simplified states
-        if (liveStatus === 'online') liveStatus = 'running';
-        if (liveStatus === 'offline') liveStatus = 'stopped';
+        if (liveStatus === "online") liveStatus = "running";
+        if (liveStatus === "offline") liveStatus = "stopped";
 
         // Attach the start time for the frontend timer
-        if (liveStatus === 'running' && craftyData.started) {
+        if (liveStatus === "running" && craftyData.started) {
           serverData.startedAt = craftyData.started;
         }
 
         if (server.status !== liveStatus) {
-          console.log(`🔄 On-demand Sync for ${server.serverName}: ${server.status} -> ${liveStatus}`);
+          console.log(
+            `🔄 On-demand Sync for ${server.serverName}: ${server.status} -> ${liveStatus}`,
+          );
           server.status = liveStatus;
           serverData.status = liveStatus;
           await server.save();
         }
       }
     } catch (err) {
-      console.warn(`⚠️ Failed to sync status during fetch for ${server.serverName}`);
-      if (err.response && (err.response.status === 404 || err.response.status === 400)) {
-        console.log(`🗑️ Auto-cleaning deleted remote server from DB: ${server.serverName}`);
+      console.warn(
+        `⚠️ Failed to sync status during fetch for ${server.serverName}`,
+      );
+      if (
+        err.response &&
+        (err.response.status === 404 || err.response.status === 400)
+      ) {
+        console.log(
+          `🗑️ Auto-cleaning deleted remote server from DB: ${server.serverName}`,
+        );
         await Server.findByIdAndDelete(server._id);
-        return res.status(404).json({ message: "Server was deleted from the remote host" });
+        return res
+          .status(404)
+          .json({ message: "Server was deleted from the remote host" });
       }
     }
 
@@ -337,44 +372,62 @@ router.get("/:id/status", protect, async (req, res) => {
       return res.status(404).json({ message: "Server not found in database" });
 
     // 2. Fetch the live stats from Crafty's API
-    console.log(`📡 Fetching live status from Crafty for: ${server.serverName} (${server.crafty_server_id})`);
-    const craftyResponse = await craftyApi.get(
-      `/servers/${server.crafty_server_id}/stats`,
+    console.log(
+      `📡 Fetching live status from Crafty for: ${server.serverName} (${server.crafty_server_id})`,
     );
+    try {
+      const craftyResponse = await craftyApi.get(
+        `/servers/${server.crafty_server_id}/stats`,
+      );
 
-    const craftyData = craftyResponse.data.data;
+      const craftyData = craftyResponse.data.data;
 
-    // Crafty 4 can have status in 'server_status' or just 'status'
-    let liveStatus = 'stopped';
-    if (craftyData.server_status) {
-      liveStatus = craftyData.server_status.toLowerCase();
-    } else if (craftyData.status) {
-      liveStatus = craftyData.status.toLowerCase();
-    } else if (craftyData.running === true) {
-      liveStatus = 'running';
+      let liveStatus = "stopped";
+      if (craftyData.running === true && craftyResponse.status) {
+        liveStatus = "running";
+      } else {
+        liveStatus = "stopped";
+      }
+
+      console.log(`Live status: ${liveStatus}`);
+      console.log(
+        `📦 Crafty Data for ${server.serverName}:`,
+        JSON.stringify(craftyData, null, 1),
+      );
+      console.log(
+        `🔍 Live Status parsed: "${liveStatus}" (Current DB Status: "${server.status}")`,
+      );
+
+      // 3. Sync the live status back to our MongoDB if it's different
+      if (server.status !== liveStatus) {
+        console.log(
+          `🔄 Syncing status for ${server.serverName}: ${server.status} -> ${liveStatus}`,
+        );
+        server.status = liveStatus;
+        await server.save();
+      }
+
+      // 4. Send the entire stats payload back to the client
+      return res.status(200).json(craftyData);
+    } catch (error) {
+      // Crafty is unreachable, update status to 'stopped' if not already
+      console.error(
+        "Crafty Stats Error:",
+        error.response?.data || error.message,
+      );
+      if (server.status !== "stopped") {
+        server.status = "stopped";
+        await server.save();
+      }
+      return res.status(200).json({
+        running: false,
+        status: "stopped",
+        message: "Crafty unreachable, status set to stopped",
+      });
     }
-
-    // Map Crafty states to our simplified states if needed
-    if (liveStatus === 'online') liveStatus = 'running';
-    if (liveStatus === 'offline') liveStatus = 'stopped';
-
-    console.log(`📦 Crafty Data for ${server.serverName}:`, JSON.stringify(craftyData, null, 1));
-    console.log(`🔍 Live Status parsed: "${liveStatus}" (Current DB Status: "${server.status}")`);
-
-    // 3. Sync the live status back to our MongoDB if it's different
-    if (server.status !== liveStatus) {
-      console.log(`🔄 Syncing status for ${server.serverName}: ${server.status} -> ${liveStatus}`);
-      server.status = liveStatus;
-      await server.save();
-    }
-
-    // 4. Send the entire stats payload back to the client
-    res.status(200).json(craftyData);
   } catch (error) {
-    console.error("Crafty Stats Error:", error.response?.data || error.message);
-    res
-      .status(500)
-      .json({ message: "Failed to fetch server status from Crafty" });
+    console.error("Server Status Route Error:", error.message);
+    res.status(500).json({ message: "Failed to fetch server status" });
   }
 });
 
@@ -430,9 +483,12 @@ router.get("/:id/logs", protect, async (req, res) => {
     if (!server) return res.status(404).json({ message: "Server not found" });
 
     // Fetch logs from Crafty (using file=false for stdout/active logs)
-    const craftyResponse = await craftyApi.get(`/servers/${server.crafty_server_id}/logs`, {
-      params: { file: false, colors: true, html: false }
-    });
+    const craftyResponse = await craftyApi.get(
+      `/servers/${server.crafty_server_id}/logs`,
+      {
+        params: { file: false, colors: true, html: false },
+      },
+    );
 
     res.status(200).json(craftyResponse.data.data);
   } catch (error) {
@@ -450,16 +506,20 @@ router.post("/:id/command", protect, async (req, res) => {
     if (!server) return res.status(404).json({ message: "Server not found" });
 
     const { command } = req.body;
-    if (!command) return res.status(400).json({ message: "No command provided" });
+    if (!command)
+      return res.status(400).json({ message: "No command provided" });
 
     // Send command to Crafty via stdin
     await craftyApi.post(`/servers/${server.crafty_server_id}/stdin`, command, {
-      headers: { "Content-Type": "text/plain" }
+      headers: { "Content-Type": "text/plain" },
     });
 
     res.status(200).json({ status: "ok" });
   } catch (error) {
-    console.error("Crafty Command Error:", error.response?.data || error.message);
+    console.error(
+      "Crafty Command Error:",
+      error.response?.data || error.message,
+    );
     res.status(500).json({ message: "Failed to send command to Crafty" });
   }
 });
@@ -472,12 +532,17 @@ router.post("/:id/restart", protect, async (req, res) => {
     const server = await Server.findById(req.params.id);
     if (!server) return res.status(404).json({ message: "Server not found" });
 
-    await craftyApi.post(`/servers/${server.crafty_server_id}/action/restart_server`);
+    await craftyApi.post(
+      `/servers/${server.crafty_server_id}/action/restart_server`,
+    );
     server.status = "starting";
     await server.save();
     res.status(200).json({ status: "ok" });
   } catch (error) {
-    console.error("Crafty Restart Error:", error.response?.data || error.message);
+    console.error(
+      "Crafty Restart Error:",
+      error.response?.data || error.message,
+    );
     res.status(500).json({ message: "Failed to restart server" });
   }
 });
@@ -490,7 +555,9 @@ router.get("/:id/config", protect, async (req, res) => {
     const server = await Server.findById(req.params.id);
     if (!server) return res.status(404).json({ message: "Server not found" });
 
-    const craftyResponse = await craftyApi.get(`/servers/${server.crafty_server_id}/stats`);
+    const craftyResponse = await craftyApi.get(
+      `/servers/${server.crafty_server_id}/stats`,
+    );
     const raw = craftyResponse.data.data?.server_id;
 
     // Only expose user-friendly fields, never paths or internal IPs
@@ -524,9 +591,14 @@ router.patch("/:id/config", protect, async (req, res) => {
 
     // Build a safe update payload — only allow known config keys
     const allowed = [
-      "server_name", "auto_start", "auto_start_delay",
-      "crash_detection", "shutdown_timeout", "logs_delete_after",
-      "count_players", "show_status"
+      "server_name",
+      "auto_start",
+      "auto_start_delay",
+      "crash_detection",
+      "shutdown_timeout",
+      "logs_delete_after",
+      "count_players",
+      "show_status",
     ];
 
     const updatePayload = {};
@@ -537,15 +609,25 @@ router.patch("/:id/config", protect, async (req, res) => {
     await craftyApi.patch(`/servers/${server.crafty_server_id}`, updatePayload);
 
     // If the server name changed, also update our MongoDB
-    if (updatePayload.server_name && updatePayload.server_name !== server.serverName) {
+    if (
+      updatePayload.server_name &&
+      updatePayload.server_name !== server.serverName
+    ) {
       server.serverName = updatePayload.server_name;
       await server.save();
     }
 
     res.status(200).json({ message: "Configuration saved successfully" });
   } catch (error) {
-    console.error("Config Update Error:", error.response?.data || error.message);
-    res.status(500).json({ message: "Failed to save config: " + (error.response?.data?.error || error.message) });
+    console.error(
+      "Config Update Error:",
+      error.response?.data || error.message,
+    );
+    res.status(500).json({
+      message:
+        "Failed to save config: " +
+        (error.response?.data?.error || error.message),
+    });
   }
 });
 
@@ -571,7 +653,10 @@ router.get("/:id/files", protect, async (req, res) => {
     if (!server) return res.status(404).json({ message: "Server not found" });
 
     const subpath = req.query.path || ".";
-    const { baseDir, resolved } = resolveServerPath(server.crafty_server_id, subpath);
+    const { baseDir, resolved } = resolveServerPath(
+      server.crafty_server_id,
+      subpath,
+    );
 
     const entries = await fs.readdir(resolved, { withFileTypes: true });
     const items = await Promise.all(
@@ -585,7 +670,7 @@ router.get("/:id/files", protect, async (req, res) => {
           modified: stat ? stat.mtime : null,
           path: path.relative(baseDir, fullPath).replace(/\\/g, "/"),
         };
-      })
+      }),
     );
 
     // Sort: folders first, then files alphabetically
@@ -594,7 +679,9 @@ router.get("/:id/files", protect, async (req, res) => {
       return a.name.localeCompare(b.name);
     });
 
-    res.status(200).json({ items, currentPath: subpath === "." ? "" : subpath });
+    res
+      .status(200)
+      .json({ items, currentPath: subpath === "." ? "" : subpath });
   } catch (error) {
     console.error("File List Error:", error.message);
     res.status(500).json({ message: "Failed to list files: " + error.message });
@@ -610,14 +697,17 @@ router.get("/:id/files/content", protect, async (req, res) => {
     if (!server) return res.status(404).json({ message: "Server not found" });
 
     const filepath = req.query.path;
-    if (!filepath) return res.status(400).json({ message: "No file path provided" });
+    if (!filepath)
+      return res.status(400).json({ message: "No file path provided" });
 
     const { resolved } = resolveServerPath(server.crafty_server_id, filepath);
     const stat = await fs.stat(resolved);
 
     // Refuse to read files larger than 5MB for safety
     if (stat.size > 5 * 1024 * 1024) {
-      return res.status(413).json({ message: "File too large to edit in browser (>5MB)" });
+      return res
+        .status(413)
+        .json({ message: "File too large to edit in browser (>5MB)" });
     }
 
     const content = await fs.readFile(resolved, "utf8");
@@ -637,7 +727,8 @@ router.put("/:id/files/content", protect, async (req, res) => {
     if (!server) return res.status(404).json({ message: "Server not found" });
 
     const { filepath, content } = req.body;
-    if (!filepath) return res.status(400).json({ message: "No file path provided" });
+    if (!filepath)
+      return res.status(400).json({ message: "No file path provided" });
 
     const { resolved } = resolveServerPath(server.crafty_server_id, filepath);
     await fs.writeFile(resolved, content || "", "utf8");
@@ -657,7 +748,8 @@ router.delete("/:id/files", protect, async (req, res) => {
     if (!server) return res.status(404).json({ message: "Server not found" });
 
     const filepath = req.query.path;
-    if (!filepath) return res.status(400).json({ message: "No file path provided" });
+    if (!filepath)
+      return res.status(400).json({ message: "No file path provided" });
 
     const { resolved } = resolveServerPath(server.crafty_server_id, filepath);
     const stat = await fs.stat(resolved);
@@ -678,23 +770,37 @@ router.delete("/:id/files", protect, async (req, res) => {
 // ==========================================
 // ROUTE 13: File Manager - Upload File
 // ==========================================
-router.post("/:id/files/upload", protect, upload.single("file"), async (req, res) => {
-  try {
-    const server = await Server.findById(req.params.id);
-    if (!server) return res.status(404).json({ message: "Server not found" });
+router.post(
+  "/:id/files/upload",
+  protect,
+  upload.single("file"),
+  async (req, res) => {
+    try {
+      const server = await Server.findById(req.params.id);
+      if (!server) return res.status(404).json({ message: "Server not found" });
 
-    const destDir = req.body.path || ".";
-    const { resolved: resolvedDir } = resolveServerPath(server.crafty_server_id, destDir);
+      const destDir = req.body.path || ".";
+      const { resolved: resolvedDir } = resolveServerPath(
+        server.crafty_server_id,
+        destDir,
+      );
 
-    if (!req.file) return res.status(400).json({ message: "No file uploaded" });
+      if (!req.file)
+        return res.status(400).json({ message: "No file uploaded" });
 
-    const destPath = path.join(resolvedDir, req.file.originalname);
-    await fs.writeFile(destPath, req.file.buffer);
-    res.status(200).json({ message: "File uploaded successfully", filename: req.file.originalname });
-  } catch (error) {
-    console.error("File Upload Error:", error.message);
-    res.status(500).json({ message: "Failed to upload file: " + error.message });
-  }
-});
+      const destPath = path.join(resolvedDir, req.file.originalname);
+      await fs.writeFile(destPath, req.file.buffer);
+      res.status(200).json({
+        message: "File uploaded successfully",
+        filename: req.file.originalname,
+      });
+    } catch (error) {
+      console.error("File Upload Error:", error.message);
+      res
+        .status(500)
+        .json({ message: "Failed to upload file: " + error.message });
+    }
+  },
+);
 
 module.exports = router;

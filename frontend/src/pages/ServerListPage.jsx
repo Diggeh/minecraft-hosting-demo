@@ -113,7 +113,7 @@ export default function ServerListPage() {
             s._id === serverId ? { ...s, status: "starting" } : s,
           ),
         );
-      }, 1000);
+      }, 3000);
     } catch (err) {
       console.error("Failed to restart server", err);
     }

@@ -72,6 +72,7 @@ const ServerDashboardPage = () => {
     }
   };
 
+  // Fetch server details once on mount
   useEffect(() => {
     const fetchServer = async () => {
       try {
@@ -84,22 +85,42 @@ const ServerDashboardPage = () => {
         setLoading(false);
       }
     };
+    fetchServer();
+  }, [id]);
 
-    const pollStatus = async () => {
+  // Fetch status and stats when tab changes to dashboard or on mount
+  useEffect(() => {
+    if (activeTab !== "dashboard") return;
+    const fetchStatus = async () => {
       try {
         const data = await getServerStatus(id);
-        const liveStatus =
-          data.server_status?.toLowerCase() ||
-          data.status?.toLowerCase() ||
-          "stopped";
+        // Normalize status safely for various API shapes
+        const normalize = (d) => {
+          // Prefer explicit server_status/status strings, then boolean 'running'
+          const raw =
+            d?.server_status ??
+            d?.status ??
+            (d?.running !== undefined ? d.running : "stopped");
+          if (typeof raw === "boolean") return raw ? "running" : "stopped";
+          if (typeof raw === "number") return raw ? "running" : "stopped";
+          const s = String(raw).toLowerCase();
+          if (s === "online" || s === "running" || s === "true" || s === "1")
+            return "running";
+          return "stopped";
+        };
+
+        const liveStatus = normalize(data);
 
         setLiveStats(data);
-
+        console.debug("Status poll", id, { data, liveStatus });
         setServer((prev) => {
-          if (!prev) return prev;
           const normalizedStatus =
             liveStatus === "online" ? "running" : liveStatus;
-
+          if (!prev) {
+            // If server details haven't loaded yet, create a minimal server
+            // object so the UI reflects the current status immediately.
+            return { _id: id, status: normalizedStatus };
+          }
           if (prev.status !== normalizedStatus) {
             console.log(
               `📡 Dashboard Sync: ${prev.status} -> ${normalizedStatus}`,
@@ -109,12 +130,25 @@ const ServerDashboardPage = () => {
           return prev;
         });
       } catch (err) {
-        console.warn("Polling status failed", err);
+        console.warn("Status fetch failed", err);
       }
     };
+    fetchStatus();
+  }, [id, activeTab]);
 
+  // Poll server status periodically while on the dashboard tab
+  useEffect(() => {
+    if (activeTab !== "dashboard") return;
+    const interval = setInterval(() => {
+      fetchStatusAndStats();
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [id, activeTab]);
+
+  // Fetch logs when tab changes to console or on mount
+  useEffect(() => {
+    if (activeTab !== "console") return;
     const fetchLogs = async () => {
-      if (activeTab !== "console") return;
       if (server?.status === "stopped") return;
       try {
         const data = await getServerLogs(id);
@@ -123,22 +157,40 @@ const ServerDashboardPage = () => {
         console.warn("Failed to fetch logs", err);
       }
     };
+    fetchLogs();
+  }, [id, activeTab, server?.status]);
 
-    fetchServer();
-
-    const statusInterval = setInterval(pollStatus, 5000);
-
-    let logsInterval;
-    if (activeTab === "console") {
-      fetchLogs();
-      logsInterval = setInterval(fetchLogs, 3000);
+  const fetchStatusAndStats = async () => {
+    try {
+      const data = await getServerStatus(id);
+      const normalize = (d) => {
+        const raw =
+          d?.server_status ??
+          d?.status ??
+          (d?.running !== undefined ? d.running : "stopped");
+        if (typeof raw === "boolean") return raw ? "running" : "stopped";
+        if (typeof raw === "number") return raw ? "running" : "stopped";
+        const s = String(raw).toLowerCase();
+        if (s === "online" || s === "running" || s === "true" || s === "1")
+          return "running";
+        return "stopped";
+      };
+      const liveStatus = normalize(data);
+      setLiveStats(data);
+      console.debug("Status poll (periodic)", id, { data, liveStatus });
+      setServer((prev) => {
+        if (!prev) {
+          return { _id: id, status: liveStatus };
+        }
+        if (prev.status !== liveStatus) {
+          return { ...prev, status: liveStatus };
+        }
+        return prev;
+      });
+    } catch (err) {
+      console.warn("Status fetch failed", err);
     }
-
-    return () => {
-      clearInterval(statusInterval);
-      if (logsInterval) clearInterval(logsInterval);
-    };
-  }, [id, activeTab]);
+  };
 
   const toggleServer = async () => {
     if (!server) return;
@@ -150,6 +202,8 @@ const ServerDashboardPage = () => {
         await startServer(server._id);
         setServer({ ...server, status: "starting" });
       }
+      // Fetch latest status after action
+      await fetchStatusAndStats();
     } catch (err) {
       console.error("Failed to toggle server status", err);
     }
@@ -160,6 +214,7 @@ const ServerDashboardPage = () => {
     try {
       await stopServer(server._id);
       setServer({ ...server, status: "stopped" });
+      await fetchStatusAndStats();
     } catch (err) {
       console.error("Stop failed", err);
     }
@@ -170,6 +225,7 @@ const ServerDashboardPage = () => {
     try {
       await restartServer(server._id);
       setServer({ ...server, status: "starting" });
+      await fetchStatusAndStats();
     } catch (err) {
       console.error("Restart failed", err);
     }
@@ -351,14 +407,6 @@ const ServerDashboardPage = () => {
                       liveStats.started !== "False" &&
                       !isNaN(new Date(liveStats.started).getTime())
                         ? new Date(liveStats.started).toLocaleString()
-                        : "Offline"}
-                    </span>
-                  </div>
-                  <div className="stat-item">
-                    <span className="stat-label">Server Uptime:</span>
-                    <span className="stat-value">
-                      {server.status === "running"
-                        ? server.uptime || "Loading..."
                         : "Offline"}
                     </span>
                   </div>

@@ -31,7 +31,7 @@ export const startServer = async (id) => {
 
 // Function to stop a server
 export const stopServer = async (id) => {
-  const response = await api.post(`/servers/${id}/action/stop_server`);
+  const response = await api.post(`/servers/${id}/stop`);
   return response.data;
 };
 
@@ -81,17 +81,24 @@ export const listServerFiles = async (id, subpath) => {
 };
 
 export const getFileContent = async (id, filepath) => {
-  const response = await api.get(`/servers/${id}/files/content`, { params: { path: filepath } });
+  const response = await api.get(`/servers/${id}/files/content`, {
+    params: { path: filepath },
+  });
   return response.data;
 };
 
 export const saveFileContent = async (id, filepath, content) => {
-  const response = await api.put(`/servers/${id}/files/content`, { filepath, content });
+  const response = await api.put(`/servers/${id}/files/content`, {
+    filepath,
+    content,
+  });
   return response.data;
 };
 
 export const deleteServerFile = async (id, filepath) => {
-  const response = await api.delete(`/servers/${id}/files`, { params: { path: filepath } });
+  const response = await api.delete(`/servers/${id}/files`, {
+    params: { path: filepath },
+  });
   return response.data;
 };
 

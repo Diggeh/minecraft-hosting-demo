@@ -50,7 +50,7 @@ const LandingPage = () => {
             </div>
             <div className="pricing-row">
               <span className="currency">₱</span>
-              <span className="amount">150</span>
+              <span className="amount">75</span>
               <span className="slash">/</span>
               <span className="period">week</span>
             </div>
@@ -73,7 +73,7 @@ const LandingPage = () => {
             </div>
             <div className="pricing-row">
               <span className="currency">₱</span>
-              <span className="amount">250</span>
+              <span className="amount">125</span>
               <span className="slash">/</span>
               <span className="period">week</span>
             </div>
@@ -96,7 +96,7 @@ const LandingPage = () => {
             </div>
             <div className="pricing-row">
               <span className="currency">₱</span>
-              <span className="amount">360</span>
+              <span className="amount">180</span>
               <span className="slash">/</span>
               <span className="period">week</span>
             </div>
