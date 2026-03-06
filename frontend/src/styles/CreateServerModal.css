@@ -1,287 +1,291 @@
 .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(8px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    padding: 2rem;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 2rem;
 }
 
 .creation-modal-card {
-    background: #1a1a1a;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 24px;
-    width: 100%;
-    max-width: 950px;
-    padding: 2.5rem;
-    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.7);
-    position: relative;
-    max-height: 90vh;
-    overflow-y: auto;
-    font-family: inherit;
-    /* Use global font */
+  background: #1a1a1a;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  width: 100%;
+  max-width: 950px;
+  padding: 2.5rem;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.7);
+  position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
+  font-family: inherit;
+  /* Use global font */
 }
 
 .close-modal-btn {
-    position: absolute;
-    top: 1.5rem;
-    right: 1.5rem;
-    background: transparent;
-    border: none;
-    color: #888;
-    cursor: pointer;
-    padding: 0.5rem;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: transparent;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
 }
 
 .close-modal-btn:hover {
-    background: rgba(255, 255, 255, 0.05);
-    color: #fff;
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
 }
 
 .creation-modal-card h1 {
-    font-size: 1.8rem;
-    margin: 0 0 2rem 0;
-    font-weight: 600;
-    letter-spacing: -0.5px;
-    color: #fff;
+  font-size: 1.8rem;
+  margin: 0 0 2rem 0;
+  font-weight: 500;
+  letter-spacing: -0.5px;
+  color: #fff;
 }
 
 .step-label {
-    color: #888;
-    font-size: 0.9rem;
-    margin-bottom: 1rem;
-    display: block;
+  color: #888;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  display: block;
 }
 
 /* Step 1: Plans */
 .plans-grid {
-    display: flex;
-    gap: 1.5rem;
-    margin-bottom: 3rem;
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 3rem;
 }
 
 .plan-option {
-    flex: 1;
-    background: #222;
-    border: 2px solid transparent;
-    border-radius: 12px;
-    padding: 1.5rem;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  flex: 1;
+  background: #222;
+  border: 2px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .plan-option:hover {
-    background: #282828;
-    border-color: rgba(255, 255, 255, 0.05);
+  background: #282828;
+  border-color: rgba(255, 255, 255, 0.05);
 }
 
 .plan-option.selected {
-    border-color: #4CAF50;
-    background: rgba(76, 175, 80, 0.05);
+  border-color: #4caf50;
+  background: rgba(76, 175, 80, 0.05);
 }
 
 .plan-option h3 {
-    margin: 0 0 1rem 0;
-    font-size: 1.4rem;
-    color: #fff;
+  margin: 0 0 1rem 0;
+  font-size: 1.4rem;
+  color: #fff;
 }
 
 .plan-specs {
-    color: #aaa;
-    font-size: 0.8rem;
-    line-height: 1.6;
+  color: #aaa;
+  font-size: 0.8rem;
+  line-height: 1.6;
+  margin-bottom: 10px;
+}
+
+.plan-specs p {
+  margin-bottom: 5px;
 }
 
 .radio-circle {
-    width: 16px;
-    height: 16px;
-    border: 2px solid #555;
-    border-radius: 50%;
-    margin-top: 1.5rem;
-    position: relative;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #555;
+  border-radius: 50%;
+  position: relative;
 }
 
 .selected .radio-circle {
-    border-color: #4CAF50;
+  border-color: #4caf50;
 }
 
 .selected .radio-circle::after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 8px;
-    height: 8px;
-    background: #4CAF50;
-    border-radius: 50%;
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 8px;
+  background: #4caf50;
+  border-radius: 50%;
 }
 
 /* Layout for Step 2 and 3 */
 .config-layout {
-    display: flex;
-    gap: 3rem;
-    margin-bottom: 3rem;
+  display: flex;
+  gap: 3rem;
+  margin-bottom: 3rem;
 }
 
 .config-column {
-    flex: 1;
+  flex: 1;
 }
 
 /* Step 2: Duration */
 .duration-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
 }
 
 .duration-option {
-    background: #222;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 10px;
-    padding: 1rem 1.2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    cursor: pointer;
-    transition: all 0.2s;
+  background: #222;
+  border: 2px solid rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  padding: 1rem 1.2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
 .duration-option:hover {
-    background: #282828;
+  background: #282828;
 }
 
 .duration-option.selected {
-    border-color: #4CAF50;
-    background: rgba(76, 175, 80, 0.05);
+  border-color: #4caf50;
+  background: rgba(76, 175, 80, 0.05);
 }
 
 .duration-info {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 .duration-info span {
-    font-size: 1rem;
-    color: #eee;
+  font-size: 1rem;
+  color: #eee;
 }
 
 .duration-info .best-value {
-    font-size: 0.7rem;
-    color: #888;
-    margin-left: 0.5rem;
+  font-size: 0.7rem;
+  color: #888;
+  margin-left: 0.5rem;
 }
 
 .price-text {
-    color: #888;
-    font-size: 0.9rem;
+  color: #888;
+  font-size: 0.9rem;
 }
 
 /* Step 3: Settings */
 .settings-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
 .form-group {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 .form-group label {
-    width: 120px;
-    color: #ccc;
-    font-size: 0.9rem;
+  width: 120px;
+  color: #ccc;
+  font-size: 0.9rem;
 }
 
 .type-options {
-    display: flex;
-    gap: 1.5rem;
+  display: flex;
+  gap: 1.5rem;
 }
 
 .type-option {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    cursor: pointer;
-    font-size: 0.9rem;
-    color: #888;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #888;
 }
 
 .type-option.selected {
-    color: #fff;
+  color: #fff;
 }
 
 .type-option .radio-circle {
-    margin-top: 0;
+  margin-top: 0;
 }
 
 .form-input,
 .form-select {
-    flex: 1;
-    background: #111;
-    border: 1px solid #333;
-    color: #fff;
-    padding: 0.6rem 1rem;
-    border-radius: 6px;
-    font-size: 0.9rem;
+  flex: 1;
+  background: #111;
+  border: 1px solid #333;
+  color: #fff;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
 }
 
 .form-input:focus,
 .form-select:focus {
-    outline: none;
-    border-color: #4CAF50;
+  outline: none;
+  border-color: #4caf50;
 }
 
 /* Footer */
 .card-footer {
-    display: flex;
-    justify-content: center;
-    margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
 }
 
 .continue-btn {
-    background: #4CAF50 !important;
-    color: #fff !important;
-    font-size: 1.1rem !important;
-    font-weight: 600 !important;
-    padding: 0.8rem 4rem !important;
-    border-radius: 50px !important;
-    border: none !important;
-    cursor: pointer;
-    transition: all 0.2s;
+  background: #4caf50 !important;
+  color: #fff !important;
+  font-size: 1.1rem !important;
+  font-weight: 600 !important;
+  padding: 0.8rem 4rem !important;
+  border-radius: 50px !important;
+  border: none !important;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
 .continue-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(76, 175, 80, 0.3);
-    background: #66bb6a !important;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(76, 175, 80, 0.3);
+  background: #66bb6a !important;
 }
 
 /* Hide scrollbar for clean look */
 .creation-modal-card::-webkit-scrollbar {
-    display: none;
+  display: none;
 }
 
 .creation-modal-card {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

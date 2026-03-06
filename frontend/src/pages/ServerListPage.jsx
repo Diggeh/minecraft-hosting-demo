@@ -9,6 +9,7 @@ import Run_btn from "../assets/Run_btn.svg";
 import Stop_btn from "../assets/Stop_btn.svg";
 import Restart_btn from "../assets/Restart_btn.svg";
 import Server_icon from "../assets/Server_icon.svg";
+import Plus_icon from "../assets/icon-plus.svg";
 import "../styles/ServerListPage.css";
 
 // Helper to format uptime from a "YYYY-MM-DD HH:mm:ss" string to DD:HH:MM:SS
@@ -29,7 +30,7 @@ const formatUptime = (startedAtStr) => {
   const hours = Math.floor((diffMs / (1000 * 60 * 60)) % 24);
   const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
-  const pad = (num) => String(num).padStart(2, '0');
+  const pad = (num) => String(num).padStart(2, "0");
 
   return `${pad(days)} : ${pad(hours)} : ${pad(minutes)} : ${pad(seconds)}`;
 };
@@ -77,7 +78,11 @@ export default function ServerListPage() {
     e.preventDefault();
     try {
       await startServer(serverId);
-      setServers(servers.map(s => s._id === serverId ? { ...s, status: "starting" } : s));
+      setServers(
+        servers.map((s) =>
+          s._id === serverId ? { ...s, status: "starting" } : s,
+        ),
+      );
     } catch (err) {
       console.error("Failed to start server", err);
     }
@@ -87,7 +92,11 @@ export default function ServerListPage() {
     e.preventDefault();
     try {
       await stopServer(serverId);
-      setServers(servers.map(s => s._id === serverId ? { ...s, status: "stopped" } : s));
+      setServers(
+        servers.map((s) =>
+          s._id === serverId ? { ...s, status: "stopped" } : s,
+        ),
+      );
     } catch (err) {
       console.error("Failed to stop server", err);
     }
@@ -99,7 +108,11 @@ export default function ServerListPage() {
       await stopServer(serverId);
       setTimeout(async () => {
         await startServer(serverId);
-        setServers(servers.map(s => s._id === serverId ? { ...s, status: "starting" } : s));
+        setServers(
+          servers.map((s) =>
+            s._id === serverId ? { ...s, status: "starting" } : s,
+          ),
+        );
       }, 1000);
     } catch (err) {
       console.error("Failed to restart server", err);
@@ -116,8 +129,12 @@ export default function ServerListPage() {
               Manage all your game servers in one place
             </p>
           </div>
-          <Button className="create-server-btn" onClick={() => setIsModalOpen(true)}>
+          <Button
+            className="create-server-btn"
+            onClick={() => setIsModalOpen(true)}
+          >
             <span>Create Server</span>
+            <img src={Plus_icon} />
           </Button>
         </header>
 
@@ -143,7 +160,11 @@ export default function ServerListPage() {
 
                 <div className="server-main-info">
                   <div className="server-icon-wrapper">
-                    <img src={Server_icon} alt="Server" className="server-main-icon-svg" />
+                    <img
+                      src={Server_icon}
+                      alt="Server"
+                      className="server-main-icon-svg"
+                    />
                   </div>
                   <div className="server-text-details">
                     <h2>{server.serverName || "Server Name"}</h2>
@@ -152,10 +173,14 @@ export default function ServerListPage() {
                 </div>
 
                 <div className="server-status-center">
-                  <div className={`status-label-text ${server.status === "running" ? "online" : ""}`}>
+                  <div
+                    className={`status-label-text ${server.status === "running" ? "online" : ""}`}
+                  >
                     {server.status === "running" ? (
                       <>
-                        <span className="uptime-numbers">{formatUptime(server.startedAt)}</span>
+                        <span className="uptime-numbers">
+                          {formatUptime(server.startedAt)}
+                        </span>
                         <div className="uptime-labels">
                           <span>Days</span>
                           <span>Hours</span>
@@ -176,7 +201,11 @@ export default function ServerListPage() {
                     onClick={(e) => handleStart(e, server._id)}
                     title="Start Server"
                   >
-                    <img src={Run_btn} alt="Start" className="action-icon-img" />
+                    <img
+                      src={Run_btn}
+                      alt="Start"
+                      className="action-icon-img"
+                    />
                   </button>
                   <button
                     className={`icon-action-btn ${server.status === "stopped" ? "active" : ""}`}
@@ -184,14 +213,22 @@ export default function ServerListPage() {
                     onClick={(e) => handleStop(e, server._id)}
                     title="Stop Server"
                   >
-                    <img src={Stop_btn} alt="Stop" className="action-icon-img" />
+                    <img
+                      src={Stop_btn}
+                      alt="Stop"
+                      className="action-icon-img"
+                    />
                   </button>
                   <button
                     className="icon-action-btn"
                     onClick={(e) => handleRestart(e, server._id)}
                     title="Restart Server"
                   >
-                    <img src={Restart_btn} alt="Restart" className="action-icon-img" />
+                    <img
+                      src={Restart_btn}
+                      alt="Restart"
+                      className="action-icon-img restart"
+                    />
                   </button>
                 </div>
               </div>
@@ -205,4 +242,4 @@ export default function ServerListPage() {
       </main>
     </div>
   );
-};
+}
