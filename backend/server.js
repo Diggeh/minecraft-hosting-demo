@@ -15,39 +15,22 @@ app.use(express.json()); // Allows your backend to understand JSON data
 const authRoutes = require("./routes/authRoutes");
 const serverRoutes = require("./routes/serverRoutes");
 const paymentRoutes = require("./routes/paymentRoutes");
+const planRoutes = require("./routes/planRoutes");
 const { protect } = require("./middleware/authMiddleware");
+const { seedDefaultPlans } = require("./controllers/planControllers");
 
 app.use("/api/auth", authRoutes);
 app.use("/api/servers", protect, serverRoutes);
 app.use("/api/payments", paymentRoutes);
-
-// Basic test route to check if the server is running
-app.get("/api/status", (req, res) => {
-  res.json({ message: "Minecraft Hosting Backend is online!" });
-});
-
-// Endpoint to discover local IP for the QR code
-app.get("/api/status/ip", (req, res) => {
-  const { networkInterfaces } = require("os");
-  const nets = networkInterfaces();
-  let localIp = "localhost";
-
-  for (const name of Object.keys(nets)) {
-    for (const net of nets[name]) {
-      // Skip over non-IPv4 and internal (i.e. 127.0.0.1) addresses
-      if (net.family === "IPv4" && !net.internal) {
-        localIp = net.address;
-        break;
-      }
-    }
-  }
-  res.json({ ip: localIp });
-});
+app.use("/api/plans", planRoutes);
 
 // Database Connection
 mongoose
   .connect(process.env.MONGO_URI)
-  .then(() => console.log("✅ Connected to MongoDB database"))
+  .then(async () => {
+    console.log("✅ Connected to MongoDB database");
+    await seedDefaultPlans();
+  })
   .catch((err) => console.error("❌ MongoDB connection error:", err));
 
 // Start the server

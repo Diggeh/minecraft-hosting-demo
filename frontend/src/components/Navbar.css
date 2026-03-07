@@ -26,6 +26,10 @@
   margin-top: 5px;
 }
 
+.logo img {
+  width: 50px;
+}
+
 .logo:visited {
   text-decoration: none;
 }
@@ -107,7 +111,7 @@
     font-size: 1.4rem;
   }
 
-  .navigation>a {
+  .navigation > a {
     display: none;
   }
 
