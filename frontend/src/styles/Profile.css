@@ -1,10 +1,16 @@
 @import url("https://fonts.googleapis.com/css2?family=Mina:wght@400;700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Kdam+Thmor+Pro&display=swap");
 
+.profile-container {
+  display: flex;  
+  height: 100vh;            
+  overflow: hidden;
+}
+
 .sidebar {
-  width: 280px;
+  width: 300px;
   height: 100%;
-  padding: 40px 20px;
+  padding: 30px 20px;
   display: flex;
   flex-direction: column;
   border-right: 1px solid #222;
@@ -19,34 +25,29 @@
 }
 
 .profile-avatar img {
-  height: 150px;
-  width: 150px;
+  height: 200px;
+  width: 200px;
 }
 
 .username {
+  font-size: 1.4rem;
   font-family: "Kdam Thmor Pro", sans-serif; 
   color: white;
 }
 
 .email {
-  font-family: "Mina", sans-serif;
-}
-
-.logout-btn {
-  width: 70%;
-  background-color: #0e0e0e;
-  border-radius: 20px;
-}
-
-.logout-link {
-  text-decoration: none;
-  color: white;
+  font-family: "Kdam Thmor Pro", sans-serif;
+  font-size: 0.7rem;
+  color: #BABABA;
+  height:30px;
 }
 
 .sidebar-nav {
+  flex: 1;
   display: flex;
   flex-direction: column;
   margin-top: 30px;
+  gap: 10px;
 }
 
 .nav-group-label {
@@ -72,17 +73,90 @@
   background-color: #5d5c5c;
 }
 
-.nav-item-icon {
+.nav-item:active {
+  background-color: #5d5c5c;
 }
 
 .nav-item h3 {
   margin-top: 3px;
   font-family: "Mina", sans-serif;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   color: white;
 }
 
+.logout-btn {
+  width: 70%;
+  height: 35px;
+  background-color: #0e0e0e;
+  color: #FF4540;
+  border-radius: 20px;
+}
 
+.logout-btn:hover {
+  background-color: #434343;
+  color: #ff2921;
+  border-radius: 20px;
+}
+
+.main-content {
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  background: rgb(30, 30, 30);
+  padding: 40px;
+}
+
+.main-content h1 {
+  font-family: "Kdam Thmor Pro", sans-serif;
+  color: #FFF;
+}
+
+.account-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-title {
+  color: #FFF;
+}
+
+.form-group {
+  display: flex;
+  width: 70%;
+  margin-top: 20px;
+  overflow: hidden;
+  background-color: #373737;
+  padding: 0px 0px 0px 10px;
+  border-radius: 10px 10px 10px 10px;
+}
+
+.form-group label {
+  flex: 0.2;
+  background-color: #373737;
+}
+
+.form-group input {
+  flex: 0.8;
+  border: none;
+  outline: none;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.save-btn {
+  margin-left: 40%;
+  margin-top: 20px;
+  padding: 10px 16px;
+  width: 30%;
+  background: #7d7762;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.save-btn:hover {
+  background: #e6b800;
+}
 
 
 

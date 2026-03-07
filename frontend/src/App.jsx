@@ -42,9 +42,7 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<SignupPage />} />
-
         <Route path="/payment" element={<PaymentPage />} />
-        <Route path="/profile" element={<Profile />} />
 
         {/* 4. The newly protected Server List route */}
         <Route
@@ -60,6 +58,14 @@ function App() {
           element={
             <ProtectedRoute>
               <ServerDashboardPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route 
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
             </ProtectedRoute>
           }
         />

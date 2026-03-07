@@ -42,7 +42,7 @@ exports.login = async (req, res) => {
         process.env.JWT_SECRET,
         { expiresIn: "1d" },
       );
-      res.status(200).json({ _id: user._id, username: user.username, token });
+      res.status(200).json({ _id: user._id, username: user.username, email: user.email, token });
     } else {
       res.status(400).json({ message: "Invalid credentials" });
     }

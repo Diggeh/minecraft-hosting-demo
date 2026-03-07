@@ -1,13 +1,28 @@
-import React, { useContext } from "react";
-import { Link } from "react-router-dom";
+import React, { useContext, useState } from "react";
 import { AuthContext } from "../contexts/authContext";
 import profileIcon from "../assets/icon_profile.svg"
-import cardIcon from "../assets/icon-credit-card.svg"
-import moneyBagIcon from "../assets/icon-money-bag";
+import toolIcon from "../assets/icon-tools.svg";
 import "../styles/Profile.css";
 
 const Profile = () => {
   const { user, logout } = useContext(AuthContext);
+  const [username, setUsername] = useState(user.username);
+  const [email, setEmail] = useState(user.email);  
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    
+    const usernameRegex = /^[a-zA-Z0-9_]{4,20}$/;
+    
+    if (!usernameRegex.test(username)) {
+        setError(
+          "Username must be 4-20 characters and contain only letters, numbers, or underscores.",
+        );
+        return;
+    }
+
+    // Handle username update here
+  }
 
   return (
     <div className="profile-container">
@@ -16,26 +31,53 @@ const Profile = () => {
           <div className="profile-avatar">
             <img src={profileIcon} alt="" />  
           </div>
-          <h2 className="username">{user.username}</h2>
-          <h1>{user.email}</h1>
+          <p className="username">{user.username}</p>
         </div>
 
-        <nav className="sidebar-nav">
-          <p className="nav-group-label">Billing</p>
+        <nav className="sidebar-nav"> 
+          <p className="nav-group-label">User</p>
           <div className="nav-item">
-            <img src={cardIcon} className="nav-item-icon" alt="credit-card-icon" />
-            <h3>Transactions</h3>
-          </div>
-          <div className="nav-item">
-            <img src={moneyBagIcon} className="nav-item-icon" alt="money-bag-icon" />
-            <h3>Transactions</h3>
+            <img src={toolIcon} className="nav-item-icon" alt="tool-icon" />
+            <h3>Account Settings</h3>
           </div>
         </nav>
 
         <button className= "logout-btn" onClick={logout}>
-          <Link to="/" className="logout-link">Logout and return</Link>
+          Logout
         </button>
       </aside>
+      <main className="main-content">
+        <form className="account-form" onSubmit={handleSubmit}>
+          <h2 className="form-title">Account Settings</h2>
+
+          <div className="form-group">
+            <label htmlFor="username">Username</label>
+            <input
+              id="username"
+              type="text"
+              value={user.username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Enter username"
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="email">Email</label>
+            <input
+              id="email"
+              type="email"
+              value={user.email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter email"
+              readOnly
+            />
+          </div>
+
+          <button type="submit" className="save-btn">
+            Save Changes
+          </button>
+        </form>
+      </main>
     </div>
   );
 };
