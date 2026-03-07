@@ -1,18 +1,46 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Button from "./Button";
 import PaymentConfirmation from "./PaymentConfirmation";
+import { getPlans } from "../services/api";
 import "../styles/CreateServerModal.css";
 
+// Duration multipliers relative to the base price (per week)
+const DURATION_OPTIONS = [
+  { id: "2-weeks", label: "2 weeks", weeks: 2 },
+  { id: "1-month", label: "1 month", weeks: 4 },
+  { id: "6-months", label: "6 months", weeks: 24 },
+  { id: "1-year", label: "1 year", weeks: 48, tag: "Best Value" },
+];
+
 const CreateServerModal = ({ isOpen, onClose }) => {
-  const [selectedPlan, setSelectedPlan] = useState("tropa");
+  const [plans, setPlans] = useState([]);
+  const [loadingPlans, setLoadingPlans] = useState(true);
+
+  const [selectedPlan, setSelectedPlan] = useState(null);
   const [selectedDuration, setSelectedDuration] = useState("2-weeks");
   const [serverType, setServerType] = useState("new");
   const [serverName, setServerName] = useState("");
   const [mcVersion, setMcVersion] = useState("1.20.4");
   const [showPayment, setShowPayment] = useState(false);
 
+  useEffect(() => {
+    if (!isOpen) return;
+    const fetchPlans = async () => {
+      try {
+        const fetched = await getPlans();
+        setPlans(fetched);
+        if (fetched.length > 0) setSelectedPlan(fetched[0].slug);
+      } catch (err) {
+        console.error("Failed to fetch plans:", err);
+      } finally {
+        setLoadingPlans(false);
+      }
+    };
+    fetchPlans();
+  }, [isOpen]);
+
   const handleClose = () => {
-    setSelectedPlan("tropa");
+    setSelectedPlan(plans[0]?.slug ?? null);
     setSelectedDuration("2-weeks");
     setServerType("new");
     setServerName("");
@@ -23,84 +51,23 @@ const CreateServerModal = ({ isOpen, onClose }) => {
 
   if (!isOpen) return null;
 
-  const plans = [
-    {
-      id: "tropa",
-      name: "Tropa",
-      ram: "4GB RAM",
-      players: "Up to 5 players",
-      location: "Manila Server",
-      price: 150,
-    },
-    {
-      id: "barkada",
-      name: "Barkada",
-      ram: "6GB RAM",
-      players: "Up to 10 players",
-      location: "Manila Server",
-      price: 250,
-    },
-    {
-      id: "barangay",
-      name: "Barangay",
-      ram: "8GB RAM",
-      players: "Up to 20 players",
-      location: "Manila Server",
-      price: 360,
-    },
-  ];
-
-  const duration = { "2-weeks": 1, "1-month": 2, "6-months": 12, "1-year": 24 };
-  const pricing = {};
-  for (const plan of plans) {
-    pricing[plan.id] = {};
-    for (const time in duration) {
-      pricing[plan.id][time] = plan.price * duration[time];
-    }
-  }
-
-  const getDurations = (planId) => [
-    {
-      id: "2-weeks",
-      label: "2 weeks",
-      price: `Php ${pricing[planId]["2-weeks"]}.00`,
-    },
-    {
-      id: "1-month",
-      label: "1 month",
-      price: `Php ${pricing[planId]["1-month"]}.00`,
-    },
-    {
-      id: "6-months",
-      label: "6 months",
-      price: `Php ${pricing[planId]["6-months"]}.00`,
-    },
-    {
-      id: "1-year",
-      label: "1 year",
-      price: `Php ${pricing[planId]["1-year"]}.00`,
-      tag: "Best Value",
-    },
-  ];
-
-  const durations = getDurations(selectedPlan);
-
-  const handleContinue = () => {
-    setShowPayment(true);
+  // Helper: calculate price for a given plan + duration
+  const getPrice = (plan, durationId) => {
+    const dur = DURATION_OPTIONS.find((d) => d.id === durationId);
+    return plan ? plan.price * dur.weeks : 0;
   };
 
-  const handlePaymentClose = () => {
-    setShowPayment(false);
-  };
+  const selectedPlanData = plans.find((p) => p.slug === selectedPlan);
 
-  const selectedPlanData = plans.find((p) => p.id === selectedPlan);
-  const orderDetails = {
-    planName: selectedPlanData.name,
-    duration: selectedDuration,
-    serverName,
-    mcVersion,
-    price: pricing[selectedPlan][selectedDuration],
-  };
+  const orderDetails = selectedPlanData
+    ? {
+        planName: selectedPlanData.name,
+        duration: selectedDuration,
+        serverName,
+        mcVersion,
+        price: getPrice(selectedPlanData, selectedDuration),
+      }
+    : null;
 
   return (
     <>
@@ -115,32 +82,38 @@ const CreateServerModal = ({ isOpen, onClose }) => {
 
           <h1>Start hosting your own Minecraft server today</h1>
 
+          {/* Step 1: Plan */}
           <div className="step-section">
             <span className="step-label">Step 1: Select a plan</span>
-            <div className="plans-grid">
-              {plans.map((plan) => (
-                <div
-                  key={plan.id}
-                  className={`plan-option ${selectedPlan === plan.id ? "selected" : ""}`}
-                  onClick={() => setSelectedPlan(plan.id)}
-                >
-                  <h3>{plan.name}</h3>
-                  <div className="plan-specs">
-                    <p>{plan.ram}</p>
-                    <p>{plan.players}</p>
-                    <p>{plan.location}</p>
+            {loadingPlans ? (
+              <p>Loading plans...</p>
+            ) : (
+              <div className="plans-grid">
+                {plans.map((plan) => (
+                  <div
+                    key={plan._id}
+                    className={`plan-option ${selectedPlan === plan.slug ? "selected" : ""}`}
+                    onClick={() => setSelectedPlan(plan.slug)}
+                  >
+                    <h3>{plan.name}</h3>
+                    <div className="plan-specs">
+                      <p>{plan.ram / 1024}GB RAM</p>
+                      <p>Up to {plan.maxPlayers} players</p>
+                      <p>Manila Server</p>
+                    </div>
+                    <div className="radio-circle"></div>
                   </div>
-                  <div className="radio-circle"></div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="config-layout">
+            {/* Step 2: Duration */}
             <div className="config-column">
               <span className="step-label">Step 2: Select server duration</span>
               <div className="duration-list">
-                {durations.map((d) => (
+                {DURATION_OPTIONS.map((d) => (
                   <div
                     key={d.id}
                     className={`duration-option ${selectedDuration === d.id ? "selected" : ""}`}
@@ -151,32 +124,33 @@ const CreateServerModal = ({ isOpen, onClose }) => {
                       <span>{d.label}</span>
                       {d.tag && <span className="best-value">{d.tag}</span>}
                     </div>
-                    <span className="price-text">{d.price}</span>
+                    <span className="price-text">
+                      Php {getPrice(selectedPlanData, d.id)}.00
+                    </span>
                   </div>
                 ))}
               </div>
             </div>
 
+            {/* Step 3: Settings */}
             <div className="config-column">
               <span className="step-label">Step 3: Configure Settings</span>
               <div className="settings-form">
                 <div className="form-group">
                   <label>Server Type</label>
                   <div className="type-options">
-                    <div
-                      className={`type-option ${serverType === "new" ? "selected" : ""}`}
-                      onClick={() => setServerType("new")}
-                    >
-                      <div className="radio-circle"></div>
-                      <span>New</span>
-                    </div>
-                    <div
-                      className={`type-option ${serverType === "existing" ? "selected" : ""}`}
-                      onClick={() => setServerType("existing")}
-                    >
-                      <div className="radio-circle"></div>
-                      <span>Existing</span>
-                    </div>
+                    {["new", "existing"].map((type) => (
+                      <div
+                        key={type}
+                        className={`type-option ${serverType === type ? "selected" : ""}`}
+                        onClick={() => setServerType(type)}
+                      >
+                        <div className="radio-circle"></div>
+                        <span>
+                          {type.charAt(0).toUpperCase() + type.slice(1)}
+                        </span>
+                      </div>
+                    ))}
                   </div>
                 </div>
 
@@ -214,18 +188,24 @@ const CreateServerModal = ({ isOpen, onClose }) => {
           </div>
 
           <div className="card-footer">
-            <Button className="continue-btn" onClick={handleContinue}>
+            <Button
+              className="continue-btn"
+              onClick={() => setShowPayment(true)}
+              disabled={!selectedPlanData}
+            >
               Continue
             </Button>
           </div>
         </div>
       </div>
 
-      <PaymentConfirmation
-        isOpen={showPayment}
-        onClose={handlePaymentClose}
-        orderDetails={orderDetails}
-      />
+      {orderDetails && (
+        <PaymentConfirmation
+          isOpen={showPayment}
+          onClose={() => setShowPayment(false)}
+          orderDetails={orderDetails}
+        />
+      )}
     </>
   );
 };

@@ -63,6 +63,11 @@ export const getUserServers = async () => {
   return response.data;
 };
 
+export const getPlans = async () => {
+  const response = await api.get("/plans");
+  return response.data.data;
+};
+
 export const getServerConfig = async (id) => {
   const response = await api.get(`/servers/${id}/config`);
   return response.data;
