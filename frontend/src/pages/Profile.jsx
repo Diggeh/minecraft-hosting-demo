@@ -50,7 +50,7 @@ const Profile = () => {
         <form className="account-form" onSubmit={handleSubmit}>
           <h2 className="form-title">Account Settings</h2>
 
-          <div className="form-group">
+          <div className="profile-form-group">
             <label htmlFor="username">Username</label>
             <input
               id="username"
@@ -61,7 +61,7 @@ const Profile = () => {
             />
           </div>
 
-          <div className="form-group">
+          <div className="profile-form-group">
             <label htmlFor="email">Email</label>
             <input
               id="email"

@@ -117,10 +117,11 @@
 }
 
 .form-title {
+  font-size: 2.3rem;
   color: #FFF;
 }
 
-.form-group {
+.profile-form-group {
   display: flex;
   width: 70%;
   margin-top: 20px;
@@ -130,12 +131,14 @@
   border-radius: 10px 10px 10px 10px;
 }
 
-.form-group label {
+.profile-form-group label {
   flex: 0.2;
   background-color: #373737;
+  align-self: center;
+  color: #FFF;
 }
 
-.form-group input {
+.profile-form-group input {
   flex: 0.8;
   border: none;
   outline: none;
