@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import QRCode from "react-qr-code";
@@ -9,6 +9,8 @@ const DEFAULT_PLAN = { name: "Starter", price: 249 };
 const PaymentPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
+
+  const hasFetched = useRef(false);
 
   // Directly use location.state.plan or the stable DEFAULT_PLAN
   const requestedPlan = location.state?.plan || DEFAULT_PLAN;
@@ -21,6 +23,9 @@ const PaymentPage = () => {
   const API_BASE = `${import.meta.env.VITE_URL}/api`;
 
   useEffect(() => {
+    if (hasFetched.current) return; // block second run
+    hasFetched.current = true;
+
     const initPage = async () => {
       try {
         console.count("🔄 Payment session creation attempt");
@@ -47,7 +52,7 @@ const PaymentPage = () => {
       }
     };
     initPage();
-  }, [requestedPlan.name, requestedPlan.price]); // Depend on plan values, not the object itself
+  }, []); // run once to avoid duplication in database
 
   useEffect(() => {
     if (!payment || status === "completed") return;

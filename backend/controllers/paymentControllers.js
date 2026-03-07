@@ -66,7 +66,12 @@ const scanEndpoint = async (req, res) => {
 const confirmPaymentAndCreateServer = async (req, res) => {
   logToFile(`🔍 Scan handler hit for ID: ${req.params.id}`);
   try {
-    const payment = await Payment.findById(req.params.id);
+    const payment = await Payment.findOneAndUpdate(
+      { _id: req.params.id, status: "pending" },
+      { $set: { status: "completed" } },
+      { new: true },
+    );
+
     if (!payment) {
       logToFile(`❌ Payment session ${req.params.id} not found in database.`);
       return res.status(404).send("Payment session not found.");
