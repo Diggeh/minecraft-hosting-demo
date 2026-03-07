@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
-import Navbar from "../components/Navbar";
 import Button from "../components/Button";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
 import { getUserServers, startServer, stopServer } from "../services/api";
 import CreateServerModal from "../components/CreateServerModal";
 import Run_btn from "../assets/Run_btn.svg";
