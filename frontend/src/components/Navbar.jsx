@@ -13,7 +13,9 @@ export default function Navbar() {
   const isSignUpPage = location.pathname === "/register";
   const isServersPage = location.pathname === "/servers";
   const isProfilePage = location.pathname === "/profile";
-  const showServersLink = user && (isServersPage || isProfilePage) ;
+  const isDashboard = location.pathname === "/servers/69af1beb542fd15860289809";
+  const showServersLink =
+    user && (isServersPage || isProfilePage || isDashboard);
 
   const profilePath = user ? "/profile" : "/login";
 
@@ -26,19 +28,25 @@ export default function Navbar() {
         </Link>
 
         <nav className="navigation">
-          {!isLoginPage && !isSignUpPage && !isServersPage && !isProfilePage && (
-            <>
-              <Link to="/#" onClick={() => window.scrollTo(0, 0)}>
-                Home
-              </Link>
-              <a href="#plans">Plans</a>
-              <a href="#features">Features</a>
-              <a href="#contactus">Contact us</a>
-            </>
-          )}
+          {!isLoginPage &&
+            !isSignUpPage &&
+            !isServersPage &&
+            !isProfilePage &&
+            !isDashboard && (
+              <>
+                <Link to="/#" onClick={() => window.scrollTo(0, 0)}>
+                  Home
+                </Link>
+                <a href="#plans">Plans</a>
+                <a href="#features">Features</a>
+                <a href="#contactus">Contact us</a>
+              </>
+            )}
 
           {showServersLink && (
-            <Link to="/servers" className="nav-link">Servers</Link>
+            <Link to="/servers" className="nav-link">
+              Servers
+            </Link>
           )}
 
           <div className="auth-group">
