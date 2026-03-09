@@ -11,6 +11,12 @@ import iconLaptop from "../assets/icon-laptop.png";
 import iconGroup from "../assets/icon-group.png";
 import iconLocation from "../assets/icon-location.png";
 import iconGlobe from "../assets/icon-globe.svg";
+import iconLatency from "../assets/icon-latency.svg";
+import iconSetup from "../assets/icon-setup.svg";
+import iconPricing from "../assets/icon-pricing.svg";
+import iconManagement from "../assets/icon-management.svg";
+import iconPayment from "../assets/icon-payment.svg";
+import iconSupport from "../assets/icon-support.svg";
 import { Link } from "react-router-dom";
 
 // Map plan slugs to their respective images (add more as needed)
@@ -103,17 +109,42 @@ const LandingPage = () => {
       <section id="features" className="features-section">
         <h1>Features</h1>
         <div className="features-container">
-          {[1, 2, 3, 4, 5, 6].map((n) => (
-            <div className="features-card" key={n}>
-              <img src={iconGlobe} alt="" />
-              <h2>Feature {n}</h2>
-              <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Expedita ducimus omnis quo similique. Quas maxime repellat
-                doloremque, libero qui asperiores molestias, perferendis
-                deserunt adipisci reiciendis quia possimus harum! Voluptas,
-                quis.
-              </p>
+          {[
+            {
+              title: "Low Latency",
+              desc: "Experience smoother Minecraft gameplay with locally hosted servers designed specifically for Filipino players.",
+              image: iconLatency,
+            },
+            {
+              title: "Instant Setup",
+              desc: "Launch your server instantly — no waiting lines, no complicated setup.",
+              image: iconSetup,
+            },
+            {
+              title: "Affordable Pricing",
+              desc: "Play with friends and split the cost. Our passes are designed for short gaming sessions.",
+              image: iconPricing,
+            },
+            {
+              title: "Easy Management",
+              desc: "Manage your server settings, plans, and players all in one simple dashboard.",
+              image: iconManagement,
+            },
+            {
+              title: "Convenient Payment",
+              desc: "Pay instantly using GCash, Maya, and other supported banks through QRPH.",
+              image: iconPayment,
+            },
+            {
+              title: "24/7 Customer Support",
+              desc: "Need help? Our Filipino support team is available 24/7.",
+              image: iconSupport,
+            },
+          ].map((feature) => (
+            <div className="features-card" key={feature.title}>
+              <img src={feature.image} alt="" />
+              <h2>{feature.title}</h2>
+              <p>{feature.desc}</p>
             </div>
           ))}
         </div>
