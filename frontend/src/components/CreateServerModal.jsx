@@ -61,6 +61,7 @@ const CreateServerModal = ({ isOpen, onClose }) => {
 
   const orderDetails = selectedPlanData
     ? {
+        planId: selectedPlanData._id,
         planName: selectedPlanData.name,
         duration: selectedDuration,
         serverName,

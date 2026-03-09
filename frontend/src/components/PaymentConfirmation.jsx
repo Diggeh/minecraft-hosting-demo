@@ -1,6 +1,6 @@
 import { useState } from "react";
 import "../styles/PaymentConfirmation.css";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const PaymentConfirmation = ({ isOpen, onClose, orderDetails }) => {
   const [hovered, setHovered] = useState(false);
@@ -48,7 +48,7 @@ const PaymentConfirmation = ({ isOpen, onClose, orderDetails }) => {
           onMouseLeave={() => setHovered(false)}
           onClick={() => {
             navigate("/payment", {
-              state: { plan: { name: planName, price: price } },
+              state: { plan: { orderDetails } },
             });
           }}
         >

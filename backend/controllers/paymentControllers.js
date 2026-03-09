@@ -1,10 +1,10 @@
-const express = require("express");
-const router = express.Router();
-const Payment = require("../models/Payment");
-const Server = require("../models/Server");
 const axios = require("axios");
+const Payment = require("../models/Payment");
+const Plan = require("../models/Plan");
 const fs = require("fs");
 const path = require("path");
+const getLocalIp = require("../utils/getLocalIp");
+const jwt = require("jsonwebtoken");
 
 const LOG_FILE = path.join(__dirname, "../debug_payment.log");
 function logToFile(msg) {
@@ -16,8 +16,15 @@ function logToFile(msg) {
 const createPaymentSession = async (req, res) => {
   console.log("💰 POST /api/payments/create hit with body:", req.body);
   try {
-    const { userId, planId, amount } = req.body;
-    const payment = await Payment.create({ userId, planId, amount });
+    // FIX: also destructure and save serverName + serverVersion
+    const { userId, planId, amount, serverName, serverVersion } = req.body;
+    const payment = await Payment.create({
+      userId,
+      planId,
+      amount,
+      serverName,
+      serverVersion,
+    });
     console.log("✅ Payment session created:", payment._id);
     res.status(201).json(payment);
   } catch (error) {
@@ -29,23 +36,15 @@ const createPaymentSession = async (req, res) => {
 const paymentStatus = async (req, res) => {
   try {
     const payment = await Payment.findById(req.params.id);
-    if (!payment) {
-      console.error(
-        `❌ Status check failed: Payment ${req.params.id} not found.`,
-      );
-      return res.status(404).json({ message: "Payment not found" });
-    }
-    res.json({ status: payment.status });
+    if (!payment) return res.status(404).json({ message: "Payment not found" });
+    res.status(200).json({ status: payment.status });
   } catch (error) {
-    console.error("❌ Status check error:", error.message);
-    res.status(500).json({ message: "Error fetching status" });
+    res.status(500).json({ message: "Failed to fetch payment status" });
   }
 };
 
 const scanEndpoint = async (req, res) => {
-  console.log("🔍 GET /api/payments/scan/demo hit!");
   try {
-    // Find the most recent pending payment for the mockup user
     const payment = await Payment.findOne({ status: "pending" }).sort({
       createdAt: -1,
     });
@@ -54,35 +53,37 @@ const scanEndpoint = async (req, res) => {
       return res.status(404).send("No pending payment sessions found.");
     }
 
-    console.log(`🔗 Redirecting to scan handler for payment: ${payment._id}`);
-    // Using relative redirect to ensure it works across environments
     res.redirect(`./${payment._id}`);
   } catch (error) {
     logToFile("❌ Demo scan redirect error: " + error.message);
-    res.status(500).send("Error redirection to demo scan");
+    res.status(500).send("Failed to find payment");
   }
 };
 
 const confirmPaymentAndCreateServer = async (req, res) => {
   logToFile(`🔍 Scan handler hit for ID: ${req.params.id}`);
   try {
-    const payment = await Payment.findOneAndUpdate(
-      { _id: req.params.id, status: "pending" },
-      { $set: { status: "completed" } },
-      { new: true },
-    );
-
+    const payment = await Payment.findById(req.params.id);
     if (!payment) {
       logToFile(`❌ Payment session ${req.params.id} not found in database.`);
-      return res.status(404).send("Payment session not found.");
+      return res.status(404).send(`<html>
+      <body style="font-family:sans-serif;text-align:center;padding:40px">
+        <h1>Payment session not found!</h1>
+         <p>This is a demo scan endpoint. In production, this would verify a real error.</p>
+      </body>
+    </html>`);
     }
 
     if (payment.status === "completed") {
       logToFile(`ℹ️ Payment ${payment._id} already marked as completed.`);
-      return res.send("Payment already completed!");
+      return res.send(`<html>
+      <body style="font-family:sans-serif;text-align:center;padding:40px">
+        <h1>Payment already completed!</h1>
+         <p>This is a demo scan endpoint. In production, this would verify a real completed session.</p>
+      </body>
+    </html>`);
     }
 
-    // 1. Mark payment as completed
     logToFile(`📝 Marking payment ${payment._id} as completed...`);
     payment.status = "completed";
     await payment.save();
@@ -91,108 +92,68 @@ const confirmPaymentAndCreateServer = async (req, res) => {
       `✅ Payment ${payment._id} confirmed! Kicking off server creation...`,
     );
 
-    // 2. TRIGGER SERVER CREATION
-    const serverName = `Server-${payment.planId}-${Math.floor(Math.random() * 1000)}`;
-    const randomPort = Math.floor(Math.random() * (26000 - 25565 + 1)) + 25565;
-
-    logToFile(
-      `🏗️ Details: Name="${serverName}", Port=${randomPort}, User=${payment.userId}`,
-    );
-
-    try {
-      logToFile("📤 POSTing to Crafty API...");
-      const baseUrl = process.env.CRAFTY_API_URL;
-      const token = (process.env.CRAFTY_API_TOKEN || "").trim(); // EXPLICIT TRIM
-
-      logToFile(`🔧 URL: ${baseUrl}`);
-      logToFile(
-        `🔧 Token Prefix: ${token ? token.substring(0, 10) + "..." : "MISSING"}`,
-      );
-
-      // Re-creating the client inside the route
-      const localCraftyApi = axios.create({
-        baseURL: baseUrl,
-        headers: { Authorization: `Bearer ${token}` },
-        httpsAgent: new (require("https").Agent)({ rejectUnauthorized: false }),
-      });
-
-      logToFile(`📝 Request Payload: Name=${serverName}, Port=${randomPort}`);
-
-      const craftyResponse = await localCraftyApi.post("/servers", {
-        name: serverName,
-        monitoring_type: "minecraft_java",
-        minecraft_java_monitoring_data: { host: "127.0.0.1", port: randomPort },
-        create_type: "minecraft_java",
-        minecraft_java_create_data: {
-          create_type: "download_jar",
-          download_jar_create_data: {
-            category: "mc_java_servers",
-            type: "paper",
-            version: "1.20.4",
-            mem_min: 1,
-            mem_max: 2,
-            server_properties_port: randomPort,
-          },
-        },
-      });
-
-      logToFile(`📥 Crafty status: ${craftyResponse.status}`);
-
-      const newServerId = craftyResponse.data.data?.new_server_id;
-      logToFile(`🆔 Crafty assigned ID: ${newServerId}`);
-
-      logToFile("📝 Attempting to save to MongoDB...");
-      const myDbServer = await Server.create({
-        owner: payment.userId,
-        crafty_server_id: newServerId || "TEMP_ID",
-        serverName: serverName,
-        port: randomPort,
-        status: "stopped",
-      });
-
-      logToFile(`🚀 SUCCESS: Server created in DB with ID: ${myDbServer._id}`);
-    } catch (craftyError) {
-      logToFile("❌ CRITICAL FAILURE in server creation block!");
-      if (craftyError.response) {
-        logToFile(`Response Status: ${craftyError.response.status}`);
-        logToFile(
-          `Response Data: ${JSON.stringify(craftyError.response.data)}`,
-        );
-      } else {
-        logToFile(`Error Message: ${craftyError.message}`);
-        logToFile(`Stack: ${craftyError.stack}`);
-      }
+    const plan = await Plan.findById(payment.planId);
+    if (!plan) {
+      console.warn("⚠️ Plan not found for planId:", payment.planId);
     }
 
+    const internalToken = jwt.sign(
+      { id: payment.userId },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "60m",
+      },
+    );
+
+    const ip = getLocalIp();
+
+    const API_BASE = `http://${ip}:5000/api`;
+
+    await axios.post(
+      `${API_BASE}/servers/create`,
+      {
+        serverName:
+          payment.serverName ||
+          `Server-${payment.planId}-${Math.floor(Math.random() * 1000)}`,
+        mcVersion: payment.serverVersion || "1.20.4",
+        planId: payment.planId,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${internalToken}`,
+        },
+      },
+    );
+
     res.send(`
-            <h1>Payment Confirmed!</h1>
-            <p>Your Minecraft server (${serverName}) is being prepared.</p>
-            <hr>
-            <small>Session ID: ${payment._id}</small>
-        `);
+    <html>
+      <body style="font-family:sans-serif;text-align:center;padding:40px">
+        <h1>✅ Demo Payment Scanned!</h1>
+        <p>This is a demo scan endpoint. In production, this would verify a real payment.</p>
+      </body>
+    </html>
+  `);
   } catch (error) {
     logToFile(`❌ Top-level crash: ${error.message}`);
-    res.status(500).send("Internal Server Error.");
+    res.status(500).send(error);
   }
 };
 
 const cancelPayment = async (req, res) => {
   try {
-    const payment = await Payment.findOneAndUpdate(
-      { _id: req.params.id, status: "pending" },
-      { $set: { status: "cancelled" } },
-      { new: true },
-    );
+    const payment = await Payment.findById(req.params.id);
+    if (!payment) return res.status(404).json({ message: "Payment not found" });
 
-    if (!payment) {
+    if (payment.status !== "pending")
       return res
-        .status(404)
-        .json({ message: "Payment not found or already processed" });
-    }
+        .status(400)
+        .json({ message: "Only pending payments can be cancelled" });
 
-    res.json({ message: "Payment cancelled", payment });
+    payment.status = "failed";
+    await payment.save();
+
+    res.status(200).json({ message: "Payment cancelled" });
   } catch (error) {
-    console.error("❌ Failed to cancel payment:", error.message);
     res.status(500).json({ message: "Failed to cancel payment" });
   }
 };

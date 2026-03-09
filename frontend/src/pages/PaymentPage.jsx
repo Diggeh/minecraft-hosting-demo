@@ -5,16 +5,11 @@ import axios from "axios";
 import QRCode from "react-qr-code";
 import "../styles/PaymentPage.css";
 
-const DEFAULT_PLAN = { name: "Starter", price: 249 };
-
 const PaymentPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
   const hasFetched = useRef(false);
-
-  // Directly use location.state.plan or the stable DEFAULT_PLAN
-  const requestedPlan = location.state?.plan || DEFAULT_PLAN;
 
   const [status, setStatus] = useState("pending");
   const [payment, setPayment] = useState(null);
@@ -23,7 +18,25 @@ const PaymentPage = () => {
 
   const API_BASE = `${import.meta.env.VITE_URL}/api`;
 
+  const orderDetails = location.state?.plan?.orderDetails;
+
+  const requestedPlan = orderDetails
+    ? {
+        id: orderDetails.planId,
+        name: orderDetails.planName,
+        price: orderDetails.price,
+        serverName: orderDetails.serverName,
+        serverVersion: orderDetails.mcVersion,
+      }
+    : null;
+
   useEffect(() => {
+    if (!requestedPlan) {
+      console.error("No plan data found in navigation state, redirecting...");
+      navigate("/servers");
+      return;
+    }
+
     if (hasFetched.current) return; // block second run
     hasFetched.current = true;
 
@@ -32,8 +45,10 @@ const PaymentPage = () => {
         console.count("🔄 Payment session creation attempt");
         const payRes = await axios.post(`${API_BASE}/payments/create`, {
           userId: "65e69e776077556066777777",
-          planId: requestedPlan.name,
+          planId: requestedPlan.id,
           amount: requestedPlan.price,
+          serverName: requestedPlan.serverName,
+          serverVersion: requestedPlan.serverVersion,
         });
         setPayment(payRes.data);
 

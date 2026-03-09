@@ -24,7 +24,7 @@ const fetchCraftyStatsByCraftyId = async (req, res) => {
 
 const createNewServer = async (req, res) => {
   try {
-    const { serverName } = req.body;
+    const { serverName, mcVersion } = req.body;
 
     // Generate a random port between 25565 and 26000 for this new server
     const randomPort = Math.floor(Math.random() * (26000 - 25565 + 1)) + 25565;
@@ -43,7 +43,7 @@ const createNewServer = async (req, res) => {
         download_jar_create_data: {
           category: "mc_java_servers",
           type: "paper",
-          version: "1.20.4",
+          version: mcVersion ?? "1.20.4",
           mem_min: 1, // 1GB minimum
           mem_max: 2, // 2GB maximum
           server_properties_port: randomPort,
@@ -51,16 +51,14 @@ const createNewServer = async (req, res) => {
       },
     });
 
-    // Let's log the response to the terminal just to see exactly what Crafty hands back!
     console.log("Crafty Success Response:", craftyResponse.data);
 
-    // Grab the exact ID from the Crafty 4 response
     const newServerId = craftyResponse.data.data?.new_server_id;
 
     // 2. Save the bridge data into our MongoDB
     const myDbServer = await Server.create({
-      owner: req.user.id, // Link this server to the logged-in user's ID
-      crafty_server_id: newServerId || "TEMP_ID", // Failsafe in case the ID location changed
+      owner: req.user.id,
+      crafty_server_id: newServerId || "TEMP_ID",
       serverName: serverName,
       port: randomPort,
       status: "stopped",
@@ -362,7 +360,6 @@ const getLiveServerStatus = async (req, res) => {
         liveStatus = "stopped";
       }
 
-      console.log(`Live status: ${liveStatus}`);
       console.log(
         `📦 Crafty Data for ${server.serverName}:`,
         JSON.stringify(craftyData, null, 1),

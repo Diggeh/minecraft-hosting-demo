@@ -4,6 +4,7 @@ import {
   Routes,
   Route,
   Navigate,
+  useLocation,
 } from "react-router-dom";
 
 import Navbar from "./components/Navbar";
@@ -46,10 +47,13 @@ const PublicRoute = ({ children }) => {
   return children;
 };
 
-function App() {
+function AppLayout() {
+  const location = useLocation();
+  const hideNavbar = location.pathname === "/payment";
+
   return (
-    <Router>
-      <Navbar />
+    <>
+      {!hideNavbar && <Navbar />}
       <Routes>
         <Route
           path="/"
@@ -83,8 +87,6 @@ function App() {
             </ProtectedRoute>
           }
         />
-
-        {/* 4. The newly protected Server List route */}
         <Route
           path="/servers"
           element={
@@ -110,6 +112,14 @@ function App() {
           }
         />
       </Routes>
+    </>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <AppLayout />
     </Router>
   );
 }
