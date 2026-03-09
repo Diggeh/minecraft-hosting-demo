@@ -181,7 +181,7 @@ html {
   flex-direction: column;
   padding: 80px;
   align-items: center;
-  scroll-margin-top: 10px;
+  scroll-margin-top: 15px;
 }
 
 .features-section p {
@@ -232,7 +232,7 @@ html {
 }
 
 .features-card p {
-  margin: 0px;
+  margin: 0 0 8px 0;
   font-size: 0.85rem;
   line-height: 1.5;
 }
