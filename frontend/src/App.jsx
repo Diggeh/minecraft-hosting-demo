@@ -34,15 +34,55 @@ const ProtectedRoute = ({ children }) => {
   return children;
 };
 
+const PublicRoute = ({ children }) => {
+  const { user, loading } = useContext(AuthContext);
+
+  if (loading) return <div style={{ padding: "20px" }}>Loading...</div>;
+
+  if (user) {
+    return <Navigate to="/servers" replace />;
+  }
+
+  return children;
+};
+
 function App() {
   return (
     <Router>
       <Navbar />
       <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<SignupPage />} />
-        <Route path="/payment" element={<PaymentPage />} />
+        <Route
+          path="/"
+          element={
+            <PublicRoute>
+              <LandingPage />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            <PublicRoute>
+              <LoginPage />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            <PublicRoute>
+              <SignupPage />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/payment"
+          element={
+            <ProtectedRoute>
+              <PaymentPage />
+            </ProtectedRoute>
+          }
+        />
 
         {/* 4. The newly protected Server List route */}
         <Route
@@ -61,7 +101,7 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route 
+        <Route
           path="/profile"
           element={
             <ProtectedRoute>

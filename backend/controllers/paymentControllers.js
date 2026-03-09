@@ -176,9 +176,31 @@ const confirmPaymentAndCreateServer = async (req, res) => {
   }
 };
 
+const cancelPayment = async (req, res) => {
+  try {
+    const payment = await Payment.findOneAndUpdate(
+      { _id: req.params.id, status: "pending" },
+      { $set: { status: "cancelled" } },
+      { new: true },
+    );
+
+    if (!payment) {
+      return res
+        .status(404)
+        .json({ message: "Payment not found or already processed" });
+    }
+
+    res.json({ message: "Payment cancelled", payment });
+  } catch (error) {
+    console.error("❌ Failed to cancel payment:", error.message);
+    res.status(500).json({ message: "Failed to cancel payment" });
+  }
+};
+
 module.exports = {
   createPaymentSession,
   paymentStatus,
   scanEndpoint,
   confirmPaymentAndCreateServer,
+  cancelPayment,
 };

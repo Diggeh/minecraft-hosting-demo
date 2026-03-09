@@ -6,5 +6,6 @@ router.post("/create", payment.createPaymentSession);
 router.get("/:id/status", payment.paymentStatus);
 router.get("/scan/demo", payment.scanEndpoint);
 router.get("/scan/:id", payment.confirmPaymentAndCreateServer);
+router.patch("/:id/cancel", payment.cancelPayment);
 
 module.exports = router;

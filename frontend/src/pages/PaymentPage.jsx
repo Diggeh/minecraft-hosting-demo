@@ -76,6 +76,17 @@ const PaymentPage = () => {
     return () => clearInterval(interval);
   }, [payment, status, navigate]);
 
+  const handleCancel = async () => {
+    if (payment?._id) {
+      try {
+        await axios.patch(`${API_BASE}/payments/${payment._id}/cancel`);
+      } catch (err) {
+        console.error("Failed to cancel payment", err);
+      }
+    }
+    navigate("/servers");
+  };
+
   if (loading)
     return <div className="payment-page">Loading payment session...</div>;
 
@@ -146,7 +157,7 @@ const PaymentPage = () => {
         </div>
 
         <div className="payment-footer">
-          <button className="cancel-btn" onClick={() => navigate("/servers")}>
+          <button className="cancel-btn" onClick={handleCancel}>
             Cancel Payment
           </button>
         </div>
