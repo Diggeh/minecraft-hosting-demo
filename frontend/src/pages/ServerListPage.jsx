@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Helmet } from "react-helmet-async";
 import Button from "../components/Button";
 import { Link, useNavigate } from "react-router-dom";
 import { getUserServers, startServer, stopServer } from "../services/api";
@@ -119,6 +120,9 @@ export default function ServerListPage() {
 
   return (
     <div className="server-list-container">
+      <Helmet>
+        <title>Dashboard</title>
+      </Helmet>
       <main className="server-list-content">
         <header className="server-list-header">
           <div className="header-titles">

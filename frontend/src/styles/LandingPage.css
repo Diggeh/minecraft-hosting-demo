@@ -12,14 +12,14 @@ html {
 }
 
 .landing-page {
-  min-height: 100vh; 
+  min-height: 100vh;
   background-color: #0e0e0e;
   color: white;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-family: "Kdam Thmor Pro", sans-serif; 
+  font-family: "Kdam Thmor Pro", sans-serif;
   overflow: hidden;
 }
 
@@ -53,15 +53,21 @@ html {
   padding: 10px 80px 10px 0px;
 }
 
+.right-section a {
+  display: flex;
+  justify-content: center;
+  text-decoration: none;
+}
+
 .btn-primary {
-  min-width: 100%;
+  min-width: 200%;
   margin-top: 10px;
 }
 
 .hero-label {
   display: flex;
   justify-content: center;
-  align-items: center;  
+  align-items: center;
   font-size: clamp(1rem, 5vw, 2rem);
 }
 
@@ -75,11 +81,11 @@ html {
 }
 
 .plans-section p {
-  margin-top: 40px; 
+  margin-top: 40px;
   font-size: 0.7rem;
 }
 
-.plans-container {  
+.plans-container {
   margin-top: 40px;
   display: flex;
   flex-direction: row;
@@ -109,8 +115,8 @@ html {
   background-color: #434343;
 }
 
-.plan-card h2 { 
-  color: #FFFFFF;
+.plan-card h2 {
+  color: #ffffff;
 }
 
 .plan-card img {
@@ -144,7 +150,7 @@ html {
 
 .pricing-row {
   display: flex;
-  align-items: top; 
+  align-items: top;
   gap: 6px;
 }
 
@@ -159,7 +165,7 @@ html {
 }
 
 .slash {
-  font-size: 3rem;   
+  font-size: 3rem;
   font-weight: 300;
   line-height: 1.5;
 }
@@ -180,7 +186,7 @@ html {
 
 .features-section p {
   display: flex;
-  margin-top: 40px; 
+  margin-top: 40px;
   font-size: 0.7rem;
 }
 
@@ -200,7 +206,7 @@ html {
   flex-direction: column;
   width: auto;
   height: auto;
-  background-color: #5E9D34;
+  background-color: #5e9d34;
   border-radius: 20px;
   padding: 20px;
   overflow: hidden;
@@ -231,7 +237,7 @@ html {
 @media (max-width: 600px) {
   .hero-section {
     flex-direction: column;
-    align-items: center; 
+    align-items: center;
     text-align: center;
     gap: 0px;
   }
@@ -242,13 +248,13 @@ html {
 
   .right-section {
     flex: none;
-    width: 100%;     
-    align-items: center; 
+    width: 100%;
+    align-items: center;
     padding: 10px 10px 10px 10px;
   }
 
   .plans-section {
-      margin-top: 0px;
+    margin-top: 0px;
   }
 
   .plans-container {

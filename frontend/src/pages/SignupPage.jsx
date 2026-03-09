@@ -1,5 +1,6 @@
 import React from "react";
 import { useState } from "react";
+import { Helmet } from "react-helmet-async";
 import api from "../services/api";
 import iconPerson from "../assets/icon_person.svg";
 import iconMail from "../assets/icon_mail.svg";
@@ -90,6 +91,9 @@ const SignupPage = () => {
 
   return (
     <div className="signup-page">
+      <Helmet>
+        <title>Sign-up</title>
+      </Helmet>
       <div className="signup-title-page">
         <p>Create an account now</p>
       </div>

@@ -1,40 +1,44 @@
 import React, { useContext, useState } from "react";
 import { AuthContext } from "../contexts/authContext";
-import profileIcon from "../assets/icon_profile.svg"
+import { Helmet } from "react-helmet-async";
+import profileIcon from "../assets/icon_profile.svg";
 import toolIcon from "../assets/icon-tools.svg";
 import "../styles/Profile.css";
 
 const Profile = () => {
   const { user, logout } = useContext(AuthContext);
   const [username, setUsername] = useState(user.username);
-  const [email, setEmail] = useState(user.email);  
+  const [email, setEmail] = useState(user.email);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     const usernameRegex = /^[a-zA-Z0-9_]{4,20}$/;
-    
+
     if (!usernameRegex.test(username)) {
-        setError(
-          "Username must be 4-20 characters and contain only letters, numbers, or underscores.",
-        );
-        return;
+      setError(
+        "Username must be 4-20 characters and contain only letters, numbers, or underscores.",
+      );
+      return;
     }
 
     // Handle username update here
-  }
+  };
 
   return (
     <div className="profile-container">
+      <Helmet>
+        <title>Profile</title>
+      </Helmet>
       <aside className="sidebar">
         <div className="user-section">
           <div className="profile-avatar">
-            <img src={profileIcon} alt="" />  
+            <img src={profileIcon} alt="" />
           </div>
           <p className="username">{user.username}</p>
         </div>
 
-        <nav className="sidebar-nav"> 
+        <nav className="sidebar-nav">
           <p className="nav-group-label">User</p>
           <div className="nav-item">
             <img src={toolIcon} className="nav-item-icon" alt="tool-icon" />
@@ -42,7 +46,7 @@ const Profile = () => {
           </div>
         </nav>
 
-        <button className= "logout-btn" onClick={logout}>
+        <button className="logout-btn" onClick={logout}>
           Logout
         </button>
       </aside>

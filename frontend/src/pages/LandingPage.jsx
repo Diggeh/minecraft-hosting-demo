@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { getPlans } from "../services/api";
+import { Helmet } from "react-helmet-async";
 import "../styles/LandingPage.css";
 import Button from "../components/Button";
 import bgImage from "../assets/minecraft-image-1.png";
@@ -10,6 +11,7 @@ import iconLaptop from "../assets/icon-laptop.png";
 import iconGroup from "../assets/icon-group.png";
 import iconLocation from "../assets/icon-location.png";
 import iconGlobe from "../assets/icon-globe.svg";
+import { Link } from "react-router-dom";
 
 // Map plan slugs to their respective images (add more as needed)
 const planImages = {
@@ -38,6 +40,9 @@ const LandingPage = () => {
 
   return (
     <div className="landing-page">
+      <Helmet>
+        <title>BlockBayan</title>
+      </Helmet>
       <section id="home">
         <div className="hero-section">
           <div className="left-section">
@@ -47,7 +52,10 @@ const LandingPage = () => {
             <div className="hero-label">
               Explore endless possibilities with your friends
             </div>
-            <Button text="Start your server today" className="btn-primary" />
+
+            <Link to="/login">
+              <Button text="Start your server today" className="btn-primary" />
+            </Link>
           </div>
         </div>
       </section>

@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../contexts/authContext";
+import { Helmet } from "react-helmet-async";
 import api from "../services/api";
 import iconMail from "../assets/icon_mail.svg";
 import iconKey from "../assets/icon_key.svg";
@@ -57,6 +58,9 @@ const LoginPage = () => {
 
   return (
     <div className="login-page">
+      <Helmet>
+        <title>Login</title>
+      </Helmet>
       <div className="login-overlay">
         <h1 className="login-title">Start your adventure today</h1>
 

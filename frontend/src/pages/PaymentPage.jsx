@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { Helmet } from "react-helmet-async";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import QRCode from "react-qr-code";
@@ -82,6 +83,9 @@ const PaymentPage = () => {
 
   return (
     <div className="payment-page">
+      <Helmet>
+        <title>Payment</title>
+      </Helmet>
       <div className="payment-container">
         <div className="payment-header">
           <h1>

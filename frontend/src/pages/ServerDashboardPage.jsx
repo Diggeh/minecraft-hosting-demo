@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import {
   getServerById,
   startServer,
@@ -263,6 +264,9 @@ const ServerDashboardPage = () => {
 
   return (
     <div className="dashboard-container">
+      <Helmet>
+        <title>{server.serverName}</title>
+      </Helmet>
       <main className="dashboard-content">
         <Link to="/servers" className="back-link">
           Back to Servers
